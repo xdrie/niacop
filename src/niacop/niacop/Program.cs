@@ -9,9 +9,10 @@ using niacop.Services;
 namespace niacop {
     class Program {
         public const string CONFIG_FILE_NAME = "niacop.conf";
+        public const string VERSION = "v0.2.3.12";
 
         static void Main(string[] args) {
-            Console.WriteLine("[niacop]");
+            Console.WriteLine($"[niacop] {VERSION}");
 
             if (args.Length < 1) {
                 Console.WriteLine("no subcommand specified.");

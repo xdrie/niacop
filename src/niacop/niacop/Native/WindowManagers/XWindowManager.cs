@@ -43,12 +43,12 @@ namespace niacop.Native.WindowManagers {
             var wPid = Shell.executeEval("xprop -id $(xdotool getwindowfocus) _NET_WM_PID | cut -d \' \' -f3");
             try {
                 return new Window {
-                    application = wClass.stdout,
-                    processId = int.Parse(wPid.stdout),
-                    title = wTitle.stdout
+                    application = wClass.stdout.Trim(),
+                    processId = int.Parse(wPid.stdout.Trim()),
+                    title = wTitle.stdout.Trim()
                 };
             } catch (FormatException e) {
-                Logger.log($"format exception: {wPid} - {e}", Logger.Level.Error);
+                Logger.log($"format exception: {wPid.stdout} - {e}", Logger.Level.Error);
                 return null;
             }
         }

@@ -72,6 +72,7 @@ namespace niacop.Services {
             }
 
             var window = _plat.wm.getActiveWindow();
+            if (window == null) return;
 
             if (current == null) {
                 gatherSession(window);
