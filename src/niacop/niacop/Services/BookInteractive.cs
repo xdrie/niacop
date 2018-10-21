@@ -41,6 +41,7 @@ namespace niacop.Services {
                 Console.WriteLine("$ book");
                 Console.WriteLine("1. new entry");
                 Console.WriteLine("2. browse");
+                Console.WriteLine("x. exit");
                 var resp = Console.ReadLine();
                 switch (resp) {
                     case "1": {
