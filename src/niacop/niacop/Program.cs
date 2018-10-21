@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Loader;
 using System.Threading;
 using niacop.Configuration;
 using niacop.Native;
@@ -41,12 +42,17 @@ namespace niacop {
             var activityDaemon = new ActivityTracker();
 
             // prepare exit handler
-            AppDomain.CurrentDomain.ProcessExit += (s, e) => {
-                Logger.log("recieved exit signal, cleaning up", Logger.Level.Warning);
-                activityDaemonTokenSource.Cancel();
-                activityDaemon.save();
-                activityDaemon.destroy();
-            };
+            var unloadHandler = new Action(() => {
+                if (!activityDaemonTokenSource.IsCancellationRequested) {
+                    Logger.log("recieved exit signal, cleaning up", Logger.Level.Warning);
+                    activityDaemonTokenSource.Cancel();
+                    activityDaemon.save();
+                    activityDaemon.destroy();
+                }
+            });
+
+            AssemblyLoadContext.Default.Unloading += (context) => unloadHandler();
+            Console.CancelKeyPress += (s, e) => unloadHandler();
 
             // prepare and run daemon
             activityDaemon.initialize();
