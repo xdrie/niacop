@@ -55,11 +55,8 @@ namespace niacop.Native.WindowManagers {
 
         public void hookUserEvents(Action<KeyboardEvent> callback) {
             // global key hook: https://unix.stackexchange.com/a/129171
-            // xinput list | grep -Po 'id=\K\d+(?=.*slave\s*keyboard)' | xargs -P0 -n1 xinput test | awk 'BEGIN{while (("xmodmap -pke" | getline) > 0) k[$2]=$4}{print $0 "[" k[$NF] "]"}'
             var globalHookCommand =
-//                "xinput list | grep -Po \'id=\\K\\d+(?=.*slave\\s*keyboard)\' | xargs -P0 -n1 xinput test | awk \'BEGIN{while ((\"xmodmap -pke\" | getline) > 0) k[$2]=$4}{print $0 \"[\" k[$NF] \"]\"}\'";
                 "xinput list | grep -Po \'id=\\K\\d+(?=.*slave\\s*keyboard)\' | xargs -P0 -n1 xinput test";
-//            var keyEventRegex = new Regex(@"state\s0x1(\d).*keycode\s([0-9]+)\s\(keysym\s0x[0-9]+,\s(\w)");
             var keyEventRegex = new Regex(@"key\s(\w+)\s+([0-9]+)");
             var keyHookProc = Shell.shellExecute(globalHookCommand);
             keyHookProc.Start();
