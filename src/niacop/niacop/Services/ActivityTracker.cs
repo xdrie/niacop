@@ -118,7 +118,7 @@ namespace niacop.Services {
                 }
 
                 bw.Flush();
-                Logger.log($"saved tracker run file sessions({sessions.Count}) [{outputStream.Position}B]",
+                Logger.log($"saved tracker run file sessions({sessions.Count}) [{outputStream.Position}B] to {trackerRunFile}",
                     Logger.Level.Trace);
             }
         }
