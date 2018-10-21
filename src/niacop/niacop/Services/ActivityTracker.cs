@@ -87,6 +87,7 @@ namespace niacop.Services {
         }
 
         private void gatherSession(Window window) {
+            if (window == null) return;
             // detect process path
             try {
                 var proc = Process.GetProcessById(window.processId);
@@ -95,7 +96,7 @@ namespace niacop.Services {
                     windowTitle = window.title,
                     processId = window.processId,
                     processName = proc.ProcessName,
-                    processPath = proc.MainModule.FileName,
+                    processPath = proc.MainModule?.FileName,
                     startTime = _plat.timestamp()
                 };
                 Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
