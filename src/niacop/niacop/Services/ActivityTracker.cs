@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -13,7 +14,7 @@ namespace niacop.Services {
         private string trackerRunId;
         private string trackerRunFile;
         private Stream outputStream;
-        
+
         public class Session {
             public string application;
             public string windowTitle;
@@ -25,7 +26,7 @@ namespace niacop.Services {
 
             public override string ToString() => $"application({duration})";
         }
-        
+
         public List<Session> sessions = new List<Session>();
         public Session current;
 
@@ -34,7 +35,7 @@ namespace niacop.Services {
         }
 
         public void initialize() {
-            trackerDataPath = Path.Combine(DataPaths.configBase, "tracker");
+            trackerDataPath = Path.Combine(DataPaths.dataBase, "tracker");
             trackerRunId = $"run_{_plat.timestamp()}";
             trackerRunFile = Path.Combine(trackerDataPath, trackerRunId);
             Directory.CreateDirectory(Path.GetDirectoryName(trackerRunFile));
@@ -56,8 +57,10 @@ namespace niacop.Services {
                     Logger.log($"session entered idle state ({idleTime})", Logger.Level.Trace);
                     endSession();
                 }
+
                 return;
             }
+
             var window = _plat.wm.getActiveWindow();
 
             if (current == null) {
@@ -78,19 +81,23 @@ namespace niacop.Services {
 
         private void gatherSession(Window window) {
             // detect process path
-            var proc = Process.GetProcessById(window.processId);
-            current = new Session {
-                application = window.application,
-                windowTitle = window.title,
-                processId = window.processId,
-                processName = proc.ProcessName,
-                processPath = proc.MainModule.FileName,
-                startTime = _plat.timestamp()
-            };
-            Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
-                Logger.Level.Trace);
+            try {
+                var proc = Process.GetProcessById(window.processId);
+                current = new Session {
+                    application = window.application,
+                    windowTitle = window.title,
+                    processId = window.processId,
+                    processName = proc.ProcessName,
+                    processPath = proc.MainModule.FileName,
+                    startTime = _plat.timestamp()
+                };
+                Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
+                    Logger.Level.Trace);
+            } catch (ArgumentException) {
+                Logger.log($"process {window.processId} did not exist", Logger.Level.Warning);
+            }
         }
-        
+
         public void save() {
             using (var bw = new BinaryWriter(outputStream)) {
                 // write header
@@ -108,8 +115,10 @@ namespace niacop.Services {
                     bw.Write(session.startTime);
                     bw.Write(session.duration);
                 }
+
                 bw.Flush();
-                Logger.log($"saved tracker run file [{outputStream.Position}]", Logger.Level.Trace);
+                Logger.log($"saved tracker run file sessions({sessions.Count}) [{outputStream.Position}B]",
+                    Logger.Level.Trace);
             }
         }
 
