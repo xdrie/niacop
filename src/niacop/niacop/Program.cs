@@ -34,7 +34,16 @@ namespace niacop {
                 case "activity":
                     subcommandActivity();
                     break;
+                case "book":
+                    subcommandBook();
+                    break;
             }
+        }
+
+        private static void subcommandBook() {
+            var bookInteractive = new BookInteractive();
+            bookInteractive.initialize();
+            bookInteractive.run();
         }
 
         private static void subcommandActivity() {
