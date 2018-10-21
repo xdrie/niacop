@@ -109,8 +109,8 @@ namespace niacop.Services {
                     bw.Write(session.duration);
                 }
                 bw.Flush();
+                Logger.log($"saved tracker run file [{outputStream.Position}]", Logger.Level.Trace);
             }
-            Logger.log($"saved tracker run file [{outputStream.Position}]", Logger.Level.Trace);
         }
 
         public void destroy() {

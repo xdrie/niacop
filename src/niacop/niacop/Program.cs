@@ -11,15 +11,18 @@ namespace niacop {
 
             var activityDaemonTokenSource = new CancellationTokenSource();
             var activityDaemon = new ActivityTracker();
-            activityDaemon.initialize();
-            activityDaemon.run(activityDaemonTokenSource.Token);
-
-            AssemblyLoadContext.Default.Unloading += (context) => {
-                Logger.log("recieved unloading signal, cleaning up", Logger.Level.Warning);
+            
+            // prepare exit handler
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => {
+                Logger.log("recieved exit signal, cleaning up", Logger.Level.Warning);
                 activityDaemonTokenSource.Cancel();
                 activityDaemon.save();
                 activityDaemon.destroy();
             };
+            
+            // prepare and run daemon
+            activityDaemon.initialize();
+            activityDaemon.run(activityDaemonTokenSource.Token);
         }
     }
 }
