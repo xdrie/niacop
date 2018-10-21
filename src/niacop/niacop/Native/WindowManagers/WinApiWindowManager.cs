@@ -16,7 +16,7 @@ namespace niacop.Native.WindowManagers {
             throw new NotImplementedException();
         }
 
-        public void hookUserEvents(Action<KeyboardEvent> callback, CancellationToken cancelToken) {
+        public void hookUserEvents(Action<KeyboardEvent> callback) {
             throw new NotImplementedException();
         }
     }

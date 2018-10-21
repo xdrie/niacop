@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -6,6 +7,8 @@ using niacop.Services;
 
 namespace niacop.Native.WindowManagers {
     public class XWindowManager : IWindowManager {
+        private Dictionary<int, string> xmodmap = new Dictionary<int, string>();
+
         public void initialize() {
             // ensure that both required commands are available
             var xprintidle = Shell.executeEval("xprintidle");
@@ -16,6 +19,16 @@ namespace niacop.Native.WindowManagers {
             if (xdotool.exitCode != 0) throw new FileNotFoundException("xdotool was not found");
             var xinput = Shell.executeEval("xinput list");
             if (xinput.exitCode != 0) throw new FileNotFoundException("xinput was not found");
+            
+            // store keyboard mappings
+            var xmodmapRaw = Shell.executeEval("xmodmap -pke");
+            foreach (var line in xmodmapRaw.stdout.Split('\n')) {
+                var cols = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (cols.Length < 4) continue; // missing keysym
+                var keyId = int.Parse(cols[1]);
+                var keyName = cols[3];
+                xmodmap[keyId] = keyName;
+            }
         }
 
         public int getIdleTime() {
@@ -40,24 +53,29 @@ namespace niacop.Native.WindowManagers {
             }
         }
 
-        public void hookUserEvents(Action<KeyboardEvent> callback, CancellationToken cancelToken) {
+        public void hookUserEvents(Action<KeyboardEvent> callback) {
             // global key hook: https://unix.stackexchange.com/a/129171
             // xinput list | grep -Po 'id=\K\d+(?=.*slave\s*keyboard)' | xargs -P0 -n1 xinput test | awk 'BEGIN{while (("xmodmap -pke" | getline) > 0) k[$2]=$4}{print $0 "[" k[$NF] "]"}'
             var globalHookCommand =
-                "xinput list | grep -Po \'id=\\K\\d+(?=.*slave\\s*keyboard)\' | xargs -P0 -n1 xinput test | awk \'BEGIN{while ((\"xmodmap -pke\" | getline) > 0) k[$2]=$4}{print $0 \"[\" k[$NF] \"]\"}\'";
+//                "xinput list | grep -Po \'id=\\K\\d+(?=.*slave\\s*keyboard)\' | xargs -P0 -n1 xinput test | awk \'BEGIN{while ((\"xmodmap -pke\" | getline) > 0) k[$2]=$4}{print $0 \"[\" k[$NF] \"]\"}\'";
+                "xinput list | grep -Po \'id=\\K\\d+(?=.*slave\\s*keyboard)\' | xargs -P0 -n1 xinput test";
 //            var keyEventRegex = new Regex(@"state\s0x1(\d).*keycode\s([0-9]+)\s\(keysym\s0x[0-9]+,\s(\w)");
-            var keyEventRegex = new Regex(@"key\s(\w+)\s+([0-9]+)\s\[(.)\]");
+            var keyEventRegex = new Regex(@"key\s(\w+)\s+([0-9]+)");
             var keyHookProc = Shell.shellExecute(globalHookCommand);
-            while (!cancelToken.IsCancellationRequested) {
-                var line = keyHookProc.StandardOutput.ReadLine();
-                if (line == null) break;
-                var lineMatch = keyEventRegex.Match(line);
-                callback(new KeyboardEvent {
-                    pressed = lineMatch.Groups[1].Value == "press",
-                    keycode = int.Parse(lineMatch.Groups[2].Value),
-                    keyChar = lineMatch.Groups[3].Value[0]
-                });
-            }
+            keyHookProc.Start();
+            keyHookProc.BeginOutputReadLine();
+            keyHookProc.OutputDataReceived += (sender, args) => {
+                var line = args.Data;
+                if (line != null) {
+                    var lineMatch = keyEventRegex.Match(line);
+                    var sysKeycode = int.Parse(lineMatch.Groups[2].Value);
+                    var keysym = xmodmap[sysKeycode];
+                    callback(new KeyboardEvent {
+                        pressed = lineMatch.Groups[1].Value == "press",
+                        key = keysym
+                    });
+                }
+            };
         }
     }
 }

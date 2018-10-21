@@ -20,6 +20,6 @@ namespace niacop.Native.WindowManagers {
         /// <returns></returns>
         Window getActiveWindow();
 
-        void hookUserEvents(Action<KeyboardEvent> callback, CancellationToken cancelToken);
+        void hookUserEvents(Action<KeyboardEvent> callback);
     }
 }

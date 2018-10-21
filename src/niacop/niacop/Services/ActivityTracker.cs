@@ -48,7 +48,7 @@ namespace niacop.Services {
         }
 
         public void run(CancellationToken token) {
-            runKeylogger(token);
+            runKeylogger();
             while (!token.IsCancellationRequested) {
                 pollSession();
                 // wait 5 seconds between session polls
@@ -107,8 +107,8 @@ namespace niacop.Services {
             }
         }
 
-        private void runKeylogger(CancellationToken token) {
-            _plat.wm.hookUserEvents(globalKeyEvent, token);
+        private void runKeylogger() {
+            _plat.wm.hookUserEvents(globalKeyEvent);
         }
 
         private void globalKeyEvent(KeyboardEvent kev) {

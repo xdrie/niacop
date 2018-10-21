@@ -38,6 +38,7 @@ namespace niacop.Native {
 
         public static ExecuteResult executeEval(string command) {
             var proc = shellExecute(command);
+            proc.Start();
             proc.WaitForExit();
             return new ExecuteResult {
                 exitCode = proc.ExitCode,
