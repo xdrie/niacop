@@ -1,11 +1,16 @@
 ﻿using System;
+using System.IO;
 
-namespace niacop.Platform {
+namespace niacop.Native {
     public static class DataPaths {
         public static string configBase;
+        public static string dataBase;
+
+        public static string dataId = "niacop";
         
         static DataPaths() {
-            configBase = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            configBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), dataId);
+            dataBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dataId);
         }
     }
 }

@@ -160,8 +160,10 @@ namespace niacop.Native {
                     } else //Unix
                     {
                         shellProc.StartInfo.FileName = "sh";
+                        var commandString = resolveExecutable ? resolveFullExecutablePath(commandName) : commandName;
+                        commandString += $" {args}";
                         shellProc.StartInfo.Arguments =
-                            $"-c \"{(resolveExecutable ? resolveFullExecutablePath(commandName) : commandName)} {args}\"";
+                            $"-c \"{(commandString.Replace("\"", "\\\""))}\"";
                         shellProc.StartInfo.CreateNoWindow = true;
                     }
                 } else {
