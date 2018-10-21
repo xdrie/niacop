@@ -19,9 +19,10 @@ for convenience, a script is provided to call `dotnet niacop.dll`. This script c
 + activity tracking mode will monitor active windows and applications and timestamps
 + run with `niacop activity`
 
-### state tracking
+### book
 
-TODO
++ an interactive mode to list words
++ an option to recall recent entries, count is configurable
 
 
 ## platform support
