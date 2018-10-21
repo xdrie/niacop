@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Mime;
 using System.Text;
 
-namespace niacop.Platform {
+namespace niacop.Native {
     public static class Shell {
         public enum ShellType {
             Generic,
@@ -88,8 +87,7 @@ namespace niacop.Platform {
                     shellProc.StartInfo.Arguments =
                         $"/C {(resolveExecutable ? resolveFullExecutablePath(commandName, true, extraPaths) : commandName)} {args}";
                     shellProc.StartInfo.CreateNoWindow = true;
-                } else //Unix
-                {
+                } else if (type == ShellType.Unix) {
                     shellProc.StartInfo.FileName = "sh";
                     shellProc.StartInfo.Arguments =
                         $"-c \"{(resolveExecutable ? resolveFullExecutablePath(commandName) : commandName)} {args}\"";
