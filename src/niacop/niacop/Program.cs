@@ -12,7 +12,6 @@ namespace niacop {
 
         static void Main(string[] args) {
             Console.WriteLine("[niacop]");
-            Console.WriteLine("running activity tracker");
 
             if (args.Length < 1) {
                 Console.WriteLine("no subcommand specified.");
@@ -44,9 +43,11 @@ namespace niacop {
             var bookInteractive = new BookInteractive();
             bookInteractive.initialize();
             bookInteractive.run();
+            bookInteractive.destroy();
         }
 
         private static void subcommandActivity() {
+            Console.WriteLine("running activity tracker");
             var activityDaemonTokenSource = new CancellationTokenSource();
             var activityDaemon = new ActivityTracker();
 
