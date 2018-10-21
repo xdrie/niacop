@@ -28,6 +28,7 @@ namespace niacop.Services {
             public string processPath { get; set; }
             public long startTime { get; set; }
             public long duration { get; set; }
+            public long keyEvents { get; set; }
 
             public override string ToString() => $"application({duration})";
         }
@@ -48,7 +49,10 @@ namespace niacop.Services {
         }
 
         public void run(CancellationToken token) {
-            runKeylogger();
+            if (Options.keylogger) {
+                runKeylogger();
+            }
+
             while (!token.IsCancellationRequested) {
                 pollSession();
                 // wait 5 seconds between session polls
@@ -81,10 +85,12 @@ namespace niacop.Services {
         }
 
         private void endSession() {
-            current.duration = _plat.timestamp() - current.startTime;
-            sessions.Add(current);
-            database.Insert(current); // save to database
-            current = null; // unset current
+            lock (current) {
+                current.duration = _plat.timestamp() - current.startTime;
+                sessions.Add(current);
+                database.Insert(current); // save to database
+                current = null; // unset current
+            }
         }
 
         private void gatherSession(Window window) {
@@ -114,7 +120,9 @@ namespace niacop.Services {
         private void globalKeyEvent(KeyboardEvent kev) {
             if (current != null) {
                 lock (current) {
-                    Logger.log($"kev {kev}", Logger.Level.Trace);
+                    if (current != null) {
+                        current.keyEvents += 1;
+                    }
                 }
             }
         }

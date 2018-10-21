@@ -5,6 +5,7 @@
         // tracker
         public static int idleThreshold = 5 * 60 * 1000;
         public static int windowPoll = 2 * 1000;
+        public static bool keylogger = false;
         
         // book
         public static int browseEntries = 10;
@@ -14,6 +15,7 @@
             
             idleThreshold = int.Parse(optionParser.get("tracker.idleThreshold"));
             windowPoll = int.Parse(optionParser.get("tracker.windowPoll"));
+            keylogger = bool.Parse(optionParser.get("tracker.keylogger"));
 
             browseEntries = int.Parse(optionParser.get("book.browseEntries"));
         }
