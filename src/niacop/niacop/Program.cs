@@ -15,6 +15,7 @@ namespace niacop {
 
             if (args.Length < 1) {
                 Console.WriteLine("no subcommand specified.");
+                return;
             }
 
             // parse options
