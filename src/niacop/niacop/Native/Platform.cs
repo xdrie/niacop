@@ -19,6 +19,10 @@ namespace niacop.Native {
             wm.initialize();
         }
 
+        public void destroy() {
+            wm?.deinitialize();
+        }
+
         public long timestamp() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
 }

@@ -130,6 +130,7 @@ namespace niacop.Services {
 
         public void destroy() {
             database.Dispose();
+            _plat.destroy();
         }
     }
 }

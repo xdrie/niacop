@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -8,6 +9,8 @@ using niacop.Services;
 namespace niacop.Native.WindowManagers {
     public class XWindowManager : IWindowManager {
         private Dictionary<int, string> xmodmap = new Dictionary<int, string>();
+
+        private Process keyHookProc;
 
         public void initialize() {
             // ensure that both required commands are available
@@ -58,7 +61,7 @@ namespace niacop.Native.WindowManagers {
             var globalHookCommand =
                 "xinput list | grep -Po \'id=\\K\\d+(?=.*slave\\s*keyboard)\' | xargs -P0 -n1 xinput test";
             var keyEventRegex = new Regex(@"key\s(\w+)\s+([0-9]+)");
-            var keyHookProc = Shell.shellExecute(globalHookCommand);
+            keyHookProc = Shell.shellExecute(globalHookCommand);
             keyHookProc.Start();
             keyHookProc.BeginOutputReadLine();
             keyHookProc.OutputDataReceived += (sender, args) => {
@@ -73,6 +76,11 @@ namespace niacop.Native.WindowManagers {
                     });
                 }
             };
+        }
+
+        public void deinitialize() {
+            keyHookProc.Kill();
+            keyHookProc.WaitForExit();
         }
     }
 }

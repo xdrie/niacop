@@ -7,6 +7,11 @@ namespace niacop.Native.WindowManagers {
         /// initialize the window manager reader
         /// </summary>
         void initialize();
+
+        /// <summary>
+        /// free resources and destroy
+        /// </summary>
+        void deinitialize();
         
         /// <summary>
         /// get idle time in milliseconds

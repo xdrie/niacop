@@ -7,6 +7,10 @@ namespace niacop.Native.WindowManagers {
             throw new NotImplementedException();
         }
 
+        public void deinitialize() {
+            throw new NotImplementedException();
+        }
+
         public int getIdleTime() {
             // GetLastInputInfo
             throw new NotImplementedException();
