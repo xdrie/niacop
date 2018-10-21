@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using niacop.Configuration;
 
 namespace niacop.Native {
     public static class DataPaths {
@@ -12,5 +13,7 @@ namespace niacop.Native {
             configBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), dataId);
             dataBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dataId);
         }
+
+        public static string profilePath => Path.Combine(dataBase, $"profile_{Options.profile}");
     }
 }

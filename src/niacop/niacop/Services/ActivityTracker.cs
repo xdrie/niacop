@@ -35,7 +35,7 @@ namespace niacop.Services {
         }
 
         public void initialize() {
-            trackerDataPath = Path.Combine(DataPaths.dataBase, "tracker");
+            trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
             trackerRunId = $"run_{_plat.timestamp()}.nia";
             trackerRunFile = Path.Combine(trackerDataPath, trackerRunId);
             Directory.CreateDirectory(Path.GetDirectoryName(trackerRunFile));
@@ -46,7 +46,7 @@ namespace niacop.Services {
             while (!token.IsCancellationRequested) {
                 pollSession();
                 // wait 5 seconds between session polls
-                Thread.Sleep(Options.windowPollDelay);
+                Thread.Sleep(Options.windowPoll);
             }
         }
 
@@ -66,8 +66,9 @@ namespace niacop.Services {
             if (current == null) {
                 gatherSession(window);
             }
+            // current can still be null, if gather fails
 
-            if (window.processId != current.processId) {
+            if (current != null && current.processId != window.processId) {
                 endSession();
                 gatherSession(window);
             }
@@ -94,7 +95,7 @@ namespace niacop.Services {
                 Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
                     Logger.Level.Trace);
             } catch (ArgumentException) {
-                Logger.log($"process {window.processId} did not exist", Logger.Level.Warning);
+                Logger.log($"process {window.processId} did not exist ({window.application})", Logger.Level.Warning);
             }
         }
 
