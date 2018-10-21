@@ -38,7 +38,7 @@ namespace niacop.Configuration {
                         values[key] = varValue;
                     }
                 } catch (Exception e) {
-                    Logger.log($"error parsing config at line {lc}: {step}", Logger.Level.Error);
+                    Logger.log($"error parsing config at line {lc}: {step}\n{e}", Logger.Level.Error);
                     throw;
                 }
             }
