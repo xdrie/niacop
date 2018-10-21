@@ -5,27 +5,24 @@ namespace niacop.Native.WindowManagers {
     public class XWindowManager : IWindowManager {
         public int getIdleTime() {
             // xprintidle
-            var xIdleTime = Shell.executeShellCommand("xprintidle", string.Empty);
-            return int.Parse(xIdleTime.output);
+            var xIdleTime = Shell.executeEval("xprintidle");
+            return int.Parse(xIdleTime.stdout);
         }
 
         public Window getActiveWindow() {
             // TODO: proper error handling for missing xdotool
-            var wClass = Shell.executeShellCommand("xprop",
-                "-id $(xdotool getwindowfocus) WM_CLASS | cut -d \'\"\' -f4");
-            var wTitle = Shell.executeShellCommand("xprop",
-                "-id $(xdotool getwindowfocus) _NET_WM_NAME | cut -d \'\"\' -f2");
-            var wPid = Shell.executeShellCommand("xprop",
-                "-id $(xdotool getwindowfocus) _NET_WM_PID | cut -d \' \' -f3");
+            var wClass = Shell.executeEval("xprop -id $(xdotool getwindowfocus) WM_CLASS | cut -d \'\"\' -f4");
+            var wTitle = Shell.executeEval("xprop -id $(xdotool getwindowfocus) _NET_WM_NAME | cut -d \'\"\' -f2");
+            var wPid = Shell.executeEval("xprop -id $(xdotool getwindowfocus) _NET_WM_PID | cut -d \' \' -f3");
             try {
                 return new Window {
-                    application = wClass.output,
-                    processId = int.Parse(wPid.output),
-                    title = wTitle.output
+                    application = wClass.stdout,
+                    processId = int.Parse(wPid.stdout),
+                    title = wTitle.stdout
                 };
             } catch (FormatException e) {
                 Logger.log($"format exception: {wPid} - {e}", Logger.Level.Error);
-                throw;
+                return null;
             }
         }
     }

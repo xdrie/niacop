@@ -29,15 +29,25 @@ namespace niacop.Native {
                     break;
             }
         }
-
+        
         public struct ExecuteResult {
-            public int exitCode { get; set; }
-            public string output { get; set; }
-            public string errorOutput { get; set; }
+            public int exitCode;
+            public string stdout;
+            public string stderr;
+        }
+
+        public static ExecuteResult executeEval(string command) {
+            var proc = shellExecute(command);
+            proc.WaitForExit();
+            return new ExecuteResult {
+                exitCode = proc.ExitCode,
+                stdout = proc.StandardOutput.ReadToEnd(),
+                stderr = proc.StandardError.ReadToEnd()
+            };
         }
 
         public static Process shellExecute(string command) {
-            var shellProc = new Process {
+            var shellProcess = new Process {
                 StartInfo = new ProcessStartInfo {
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -48,24 +58,24 @@ namespace niacop.Native {
             command = command.Replace("\"", "\\\"");
             switch (type) {
                 case ShellType.Windows: {
-                    shellProc.StartInfo.FileName = which("cmd.exe");
-                    shellProc.StartInfo.Arguments =
+                    shellProcess.StartInfo.FileName = which("cmd.exe");
+                    shellProcess.StartInfo.Arguments =
                         $"/C {command}";
-                    shellProc.StartInfo.CreateNoWindow = true;
+                    shellProcess.StartInfo.CreateNoWindow = true;
                     break;
                 }
                 case ShellType.Unix: {
-                    shellProc.StartInfo.FileName = "sh";
-                    shellProc.StartInfo.Arguments =
+                    shellProcess.StartInfo.FileName = "sh";
+                    shellProcess.StartInfo.Arguments =
                         $"-c \"{command}\"";
-                    shellProc.StartInfo.CreateNoWindow = true;
+                    shellProcess.StartInfo.CreateNoWindow = true;
                     break;
                 }
                 default:
                     throw new PlatformNotSupportedException();
             }
 
-            return shellProc;
+            return shellProcess;
         }
         
         public static string which(string fileName, params string[] extraPaths) {
