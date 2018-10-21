@@ -36,7 +36,7 @@ namespace niacop.Services {
 
         public void initialize() {
             trackerDataPath = Path.Combine(DataPaths.dataBase, "tracker");
-            trackerRunId = $"run_{_plat.timestamp()}";
+            trackerRunId = $"run_{_plat.timestamp()}.nia";
             trackerRunFile = Path.Combine(trackerDataPath, trackerRunId);
             Directory.CreateDirectory(Path.GetDirectoryName(trackerRunFile));
             outputStream = File.Open(trackerRunFile, FileMode.Create, FileAccess.Write);
