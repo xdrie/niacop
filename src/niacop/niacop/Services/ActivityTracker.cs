@@ -48,6 +48,7 @@ namespace niacop.Services {
         }
 
         public void run(CancellationToken token) {
+            runKeylogger(token);
             while (!token.IsCancellationRequested) {
                 pollSession();
                 // wait 5 seconds between session polls
@@ -103,6 +104,18 @@ namespace niacop.Services {
                     Logger.Level.Trace);
             } catch (ArgumentException) {
                 Logger.log($"process {window.processId} did not exist ({window.application})", Logger.Level.Warning);
+            }
+        }
+
+        private void runKeylogger(CancellationToken token) {
+            _plat.wm.hookUserEvents(globalKeyEvent, token);
+        }
+
+        private void globalKeyEvent(KeyboardEvent kev) {
+            if (current != null) {
+                lock (current) {
+                    Logger.log($"kev {kev}", Logger.Level.Trace);
+                }
             }
         }
 

@@ -1,4 +1,7 @@
-﻿namespace niacop.Native.WindowManagers {
+﻿using System;
+using System.Threading;
+
+namespace niacop.Native.WindowManagers {
     public interface IWindowManager {
         /// <summary>
         /// initialize the window manager reader
@@ -16,5 +19,7 @@
         /// </summary>
         /// <returns></returns>
         Window getActiveWindow();
+
+        void hookUserEvents(Action<KeyboardEvent> callback, CancellationToken cancelToken);
     }
 }
