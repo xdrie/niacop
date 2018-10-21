@@ -14,7 +14,7 @@ namespace niacop.Native {
                     wm = new WinApiWindowManager();
                     break;
                 default:
-                    throw new NotSupportedException($"The platform {Environment.OSVersion.Platform} is not supported.");
+                    throw new PlatformNotSupportedException($"The platform {Environment.OSVersion.Platform} is not supported.");
             }
         }
 
