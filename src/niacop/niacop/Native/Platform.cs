@@ -16,6 +16,7 @@ namespace niacop.Native {
                 default:
                     throw new PlatformNotSupportedException($"The platform {Environment.OSVersion.Platform} is not supported.");
             }
+            wm.initialize();
         }
 
         public long timestamp() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
