@@ -6,23 +6,28 @@ using System.Threading;
 using niacop.Configuration;
 using niacop.Native;
 using niacop.Native.WindowManagers;
+using SQLite;
 
 namespace niacop.Services {
     public class ActivityTracker {
         private Platform _plat;
         private string trackerDataPath;
-        private string trackerRunId;
         private string trackerRunFile;
         private Stream outputStream;
 
         public class Session {
-            public string application;
-            public string windowTitle;
-            public int processId;
-            public string processName;
-            public string processPath;
-            public long startTime;
-            public long duration;
+            [PrimaryKey, AutoIncrement]
+            public int id { get; set; }
+
+            [Indexed]
+            public string application { get; set; }
+
+            public string windowTitle { get; set; }
+            public int processId { get; set; }
+            public string processName { get; set; }
+            public string processPath { get; set; }
+            public long startTime { get; set; }
+            public long duration { get; set; }
 
             public override string ToString() => $"application({duration})";
         }
@@ -36,10 +41,8 @@ namespace niacop.Services {
 
         public void initialize() {
             trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
-            trackerRunId = $"run_{_plat.timestamp()}.nia";
-            trackerRunFile = Path.Combine(trackerDataPath, trackerRunId);
+            trackerRunFile = Path.Combine(trackerDataPath, "activity.db");
             Directory.CreateDirectory(Path.GetDirectoryName(trackerRunFile));
-            outputStream = File.Open(trackerRunFile, FileMode.Create, FileAccess.Write);
         }
 
         public void run(CancellationToken token) {
@@ -99,32 +102,6 @@ namespace niacop.Services {
             }
         }
 
-        public void save() {
-            using (var bw = new BinaryWriter(outputStream)) {
-                // write header
-                bw.Write(new byte[] {0xFD, 0xCF});
-                // write version ID
-                bw.Write(02);
-                // write sessions
-                bw.Write(sessions.Count);
-                foreach (var session in sessions) {
-                    bw.Write(session.application);
-                    bw.Write(session.windowTitle);
-                    bw.Write(session.processId);
-                    bw.Write(session.processName);
-                    bw.Write(session.processPath);
-                    bw.Write(session.startTime);
-                    bw.Write(session.duration);
-                }
-
-                bw.Flush();
-                Logger.log($"saved tracker run file sessions({sessions.Count}) [{outputStream.Position}B] to {trackerRunFile}",
-                    Logger.Level.Trace);
-            }
-        }
-
-        public void destroy() {
-            outputStream.Dispose();
-        }
+        public void destroy() { }
     }
 }

@@ -46,7 +46,6 @@ namespace niacop {
                 if (!activityDaemonTokenSource.IsCancellationRequested) {
                     Logger.log("recieved exit signal, cleaning up", Logger.Level.Warning);
                     activityDaemonTokenSource.Cancel();
-                    activityDaemon.save();
                     activityDaemon.destroy();
                 }
             });
