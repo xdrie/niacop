@@ -12,8 +12,8 @@ namespace niacop.Services {
     public class ActivityTracker {
         private Platform _plat;
         private string trackerDataPath;
-        private string trackerRunFile;
-        private Stream outputStream;
+        private string trackerDatabaseFile;
+        private SQLiteConnection database;
 
         public class Session {
             [PrimaryKey, AutoIncrement]
@@ -41,8 +41,10 @@ namespace niacop.Services {
 
         public void initialize() {
             trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
-            trackerRunFile = Path.Combine(trackerDataPath, "activity.db");
-            Directory.CreateDirectory(Path.GetDirectoryName(trackerRunFile));
+            trackerDatabaseFile = Path.Combine(trackerDataPath, "activity.db");
+            Directory.CreateDirectory(Path.GetDirectoryName(trackerDatabaseFile));
+            database = new SQLiteConnection(trackerDatabaseFile);
+            database.CreateTable<Session>();
         }
 
         public void run(CancellationToken token) {
@@ -80,6 +82,7 @@ namespace niacop.Services {
         private void endSession() {
             current.duration = _plat.timestamp() - current.startTime;
             sessions.Add(current);
+            database.Insert(current); // save to database
             current = null; // unset current
         }
 
@@ -102,6 +105,8 @@ namespace niacop.Services {
             }
         }
 
-        public void destroy() { }
+        public void destroy() {
+            database.Dispose();
+        }
     }
 }
