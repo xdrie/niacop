@@ -97,7 +97,15 @@ function graphActivityTimeline() {
     name: 'usage'
   })
 
-  var layout = {}
+  var layout = {
+    title: 'Session Timeline',
+    xaxis: {
+      title: 'Time'
+    },
+    yaxis: {
+      title: 'Time (s)'
+    }
+  }
   Plotly.newPlot(element, data, { ...defaultLayout, ...layout }, { ...defaultGraphOptions });
 }
 
@@ -133,6 +141,8 @@ function graphActivityApplications() {
   console.log(pie)
   data.push(pie)
 
-  var layout = {}
+  var layout = {
+    title: 'Application Usage'
+  }
   Plotly.newPlot(element, data, { ...defaultLayout, ...layout }, { ...defaultGraphOptions });
 }
