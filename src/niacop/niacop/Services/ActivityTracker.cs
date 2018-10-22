@@ -88,6 +88,8 @@ namespace niacop.Services {
         private void endSession() {
             lock (current) {
                 current.duration = _plat.timestamp() - current.startTime;
+                Logger.log($"    ended session ({current.duration}ms/{current.keyEvents}ks)",
+                    Logger.Level.Trace);
                 sessions.Add(current);
                 database.Insert(current); // save to database
                 current = null; // unset current
