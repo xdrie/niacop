@@ -51,8 +51,8 @@ function onActivityUploaded(files) {
   reader.readAsText(file)
   reader.onload = () => {
     activityData = parseCSV(reader.result)
-    graphActivityTimeline()
     graphActivityApplications()
+    graphActivityTimeline()
   }
 }
 
@@ -66,36 +66,40 @@ function graphActivityTimeline() {
 
   var data = []
 
-  var x = []
-  var y = []
-  var c = []
+  var timeline = {
+    x: [],
+    y: [],
+    type: 'scatter',
+    opacity: 0.5,
+    line: { width: 20 },
+    mode: 'markers',
+    marker: {
+      symbol: 'circle',
+      size: [],
+      sizemin: 2,
+      sizemax: 10,
+      sizemode: 'area'
+    },
+    text: [],
+    name: 'usage'
+  }
   for (var i = 1; i < activityData.length; i++) {
     var row = activityData[i];
     var application = row[1]
     var title = row[2]
     var start = parseInt(row[6])
     var duration = parseInt(row[7])
+    var kbCount = parseInt(row[8])
     var startTs = convertTimestamp(start)
     var endTs = convertTimestamp(start + duration)
 
-    x.push(startTs)
-    y.push(duration / 1000)
+    timeline.x.push(startTs)
+    timeline.y.push(duration / 1000)
     var humanTime = msToTime(duration)
-    c.push(`${humanTime} - ${application} - ${title}`)
+    timeline.text.push(`${humanTime} - ${application} - ${title}`)
+    timeline.marker.size.push(kbCount)
   }
-  data.push({
-    x: x,
-    y: y,
-    type: 'scatter',
-    opacity: 0.5,
-    line: { width: 20 },
-    mode: 'markers',
-    marker: {
-      symbol: 'circle'
-    },
-    text: c,
-    name: 'usage'
-  })
+  data.push(timeline)
 
   var layout = {
     title: 'Session Timeline',
@@ -115,6 +119,7 @@ function graphActivityApplications() {
   var data = []
 
   var apptime = {}
+  var totalTime = 0
   for (var i = 1; i < activityData.length; i++) {
     var row = activityData[i];
     var application = row[1]
@@ -124,7 +129,9 @@ function graphActivityApplications() {
       apptime[application] = 0
     }
     apptime[application] += duration
+    totalTime += duration
   }
+  var fTotalTime = msToTime(totalTime)
 
   var pie = {
     values: [],
@@ -142,7 +149,7 @@ function graphActivityApplications() {
   data.push(pie)
 
   var layout = {
-    title: 'Application Usage'
+    title: `Application Usage (${fTotalTime})`
   }
   Plotly.newPlot(element, data, { ...defaultLayout, ...layout }, { ...defaultGraphOptions });
 }
