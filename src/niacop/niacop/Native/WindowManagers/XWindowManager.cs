@@ -79,8 +79,10 @@ namespace niacop.Native.WindowManagers {
         }
 
         public void deinitialize() {
-            keyHookProc.Kill();
-            keyHookProc.WaitForExit();
+            if (keyHookProc != null && !keyHookProc.HasExited) {
+                keyHookProc.Kill();
+                keyHookProc.WaitForExit();   
+            }
         }
     }
 }
