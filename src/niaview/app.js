@@ -76,9 +76,9 @@ function graphActivityTimeline() {
     marker: {
       symbol: 'circle',
       size: [],
-      sizemin: 4,
-      sizemax: 20,
-      sizemode: 'area'
+      // sizemin: 4,
+      // sizemax: 20,
+      // sizemode: 'area'
     },
     text: [],
     name: 'usage'
@@ -93,11 +93,18 @@ function graphActivityTimeline() {
     var startTs = convertTimestamp(start)
     var endTs = convertTimestamp(start + duration)
 
+    var kbRate = kbCount / (duration * 1000)
+    // TODO: consider using kbRate instead
     timeline.x.push(startTs)
     timeline.y.push(duration / 1000)
     var humanTime = msToTime(duration)
     timeline.text.push(`(${humanTime}/${kbCount}) - ${application} - ${title}`)
-    timeline.marker.size.push(kbCount)
+    // transform kbCount
+    KBCOUNT_MAX = 1000
+    var markerSize = kbCount
+    if (markerSize > KBCOUNT_MAX) markerSize = KBCOUNT_MAX
+    markerSize = Math.floor(4 + 16 * (markerSize / KBCOUNT_MAX))
+    timeline.marker.size.push(markerSize)
   }
   data.push(timeline)
 
