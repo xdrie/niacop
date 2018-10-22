@@ -31,13 +31,28 @@ function parseCSV(str) {
   return arr;
 }
 
+// https://stackoverflow.com/a/19700358
+function msToTime(duration) {
+  var milliseconds = parseInt((duration % 1000) / 100),
+    seconds = parseInt((duration / 1000) % 60),
+    minutes = parseInt((duration / (1000 * 60)) % 60),
+    hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+  seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+  return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+}
+
 function onActivityUploaded(files) {
   var file = files[0];
   var reader = new FileReader();
   reader.readAsText(file)
   reader.onload = () => {
     activityData = parseCSV(reader.result)
-    graphActivity()
+    graphActivityTimeline()
+    graphActivityApplications()
   }
 }
 
@@ -46,9 +61,8 @@ function convertTimestamp(uts) {
   return now;
 }
 
-function graphActivity() {
-  // graph activity
-  var element = document.getElementById('timeline_bars');
+function graphActivityTimeline() {
+  var element = document.getElementById('plot_timeline');
 
   var data = []
 
@@ -63,10 +77,11 @@ function graphActivity() {
     var duration = parseInt(row[7])
     var startTs = convertTimestamp(start)
     var endTs = convertTimestamp(start + duration)
-    
+
     x.push(startTs)
     y.push(duration / 1000)
-    c.push(`${application} - ${title}`)
+    var humanTime = msToTime(duration)
+    c.push(`${humanTime} - ${application} - ${title}`)
   }
   data.push({
     x: x,
@@ -75,17 +90,49 @@ function graphActivity() {
     opacity: 0.5,
     line: { width: 20 },
     mode: 'markers',
+    marker: {
+      symbol: 'circle'
+    },
     text: c,
     name: 'usage'
   })
 
-  var layout = {
-    yaxis: {
-      // showgrid: false,
-      // zeroline: false,
-      // showline: false,
-      // showticklabels: false
+  var layout = {}
+  Plotly.newPlot(element, data, { ...defaultLayout, ...layout }, { ...defaultGraphOptions });
+}
+
+function graphActivityApplications() {
+  var element = document.getElementById('plot_applications');
+
+  var data = []
+
+  var apptime = {}
+  for (var i = 1; i < activityData.length; i++) {
+    var row = activityData[i];
+    var application = row[1]
+    var start = parseInt(row[6])
+    var duration = parseInt(row[7])
+    if (!(application in apptime)) {
+      apptime[application] = 0
     }
+    apptime[application] += duration
   }
+
+  var pie = {
+    values: [],
+    labels: [],
+    type: 'pie',
+    hole: 0.2
+  }
+
+  for (var app in apptime) {
+    pie.values.push(apptime[app])
+    ftime = msToTime(apptime[app])
+    pie.labels.push(`${app} - ${ftime}`)
+  }
+  console.log(pie)
+  data.push(pie)
+
+  var layout = {}
   Plotly.newPlot(element, data, { ...defaultLayout, ...layout }, { ...defaultGraphOptions });
 }
