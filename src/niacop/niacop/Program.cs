@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
 using niacop.Configuration;
+using niacop.Extensibility;
 using niacop.Native;
 using niacop.Services;
 
@@ -32,14 +34,18 @@ namespace niacop {
 
             // load plugins
             Logger.log($"loading plugins", Logger.Level.Trace);
-            ExtensibilityService.loader.loadFrom(Assembly.GetExecutingAssembly());
+            var plugins = new List<INiaPlugin>();
+            var defaultPlugins = ExtensibilityService.loader.loadFrom(Assembly.GetExecutingAssembly());
+            plugins.AddRange(defaultPlugins);
             foreach (var pluginContainer in Options.plugins) {
                 var asm = Assembly.Load(pluginContainer);
-                var plugins = ExtensibilityService.loader.loadFrom(asm);
-                foreach (var plugin in plugins) {
-                    // register plugin types
-                    plugin.beforeActivation(ExtensibilityService.registry);
-                }
+                var asmPlugins = ExtensibilityService.loader.loadFrom(asm);
+                plugins.AddRange(asmPlugins);
+            }
+
+            foreach (var plugin in plugins) {
+                // register plugin types
+                plugin.beforeActivation(ExtensibilityService.registry);
             }
 
             var subcommand = args[0];

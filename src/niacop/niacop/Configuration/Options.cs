@@ -1,4 +1,6 @@
-﻿namespace niacop.Configuration {
+﻿using System;
+
+namespace niacop.Configuration {
     public static class Options {
         public static string profile = "default";
         
@@ -22,7 +24,7 @@
 
             browseEntries = int.Parse(optionParser.get("book.browseEntries"));
 
-            plugins = optionParser.get("plugins.plugins").Split(",");
+            plugins = optionParser.get("plugins.plugins").Split(",", StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

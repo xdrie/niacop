@@ -7,7 +7,7 @@ namespace niacop.Configuration {
     public class OptionParser {
         // - regexes
         private Regex nodeRegex = new Regex(@"\[(\w+)\]");
-        private Regex setRegex = new Regex(@"(\w+)\s*=\s*(\w+)");
+        private Regex setRegex = new Regex(@"(\w+)\s*=\s*(.+)");
 
         // - data
         public string node;
