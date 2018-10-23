@@ -111,7 +111,7 @@ namespace niacop.Services {
                 Logger.log($"    ended session ({current.duration}ms/{current.keyEvents}ks)",
                     Logger.Level.Trace);
                 sessions.Add(current);
-                database.Insert(current); // save to database
+                database.Update(current); // save to database
                 current = null; // unset current
             }
         }
@@ -129,6 +129,7 @@ namespace niacop.Services {
                     processPath = proc.MainModule?.FileName,
                     startTime = Platform.timestamp()
                 };
+                database.Insert(current); // initially create session
                 Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
                     Logger.Level.Trace);
             } catch (ArgumentException) {

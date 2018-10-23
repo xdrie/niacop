@@ -10,7 +10,7 @@ namespace niacop.Plugins.Tracker {
         public class WindowTitleEvent {
             [PrimaryKey, AutoIncrement]
             public int id { get; set; }
-            
+
             public long timestamp { get; set; }
             public string title { get; set; }
 
