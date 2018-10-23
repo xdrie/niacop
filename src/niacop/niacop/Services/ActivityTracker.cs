@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using niacop.Configuration;
+using niacop.Extensibility.Tracker;
 using niacop.Native;
 using niacop.Native.WindowManagers;
 using SQLite;
@@ -79,9 +80,20 @@ namespace niacop.Services {
             }
             // current can still be null, if gather fails
 
-            if (current != null && current.processId != window.processId) {
-                endSession();
-                gatherSession(window);
+            if (current != null) {
+                lock (current) {
+                    if (current.processId != window.processId) {
+                        // window was changed, this session is over
+                        endSession();
+                        gatherSession(window);
+                    } else {
+                        // activity events?
+                        var sc = new SessionContext {
+                            session = current,
+                            window = window
+                        };
+                    }
+                }
             }
         }
 
