@@ -55,7 +55,7 @@ namespace niacop.Services {
                         // clean up words
                         rawWords = rawWords.Replace(',', ' ');
                         var words = rawWords.Split(' ');
-                        var timestamp = _plat.timestamp();
+                        var timestamp = Platform.timestamp();
                         var entry = new BookEntry {timestamp = timestamp, words = string.Join(',', words)};
                         database.Insert(entry);
                         Console.WriteLine($"saved entry[{words.Length}] for {DateTime.Now}/{timestamp}");

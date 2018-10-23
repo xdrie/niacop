@@ -92,6 +92,7 @@ namespace niacop.Services {
                             session = current,
                             window = window
                         };
+//                        el.update(sc);
                     }
                 }
             }
@@ -99,7 +100,7 @@ namespace niacop.Services {
 
         private void endSession() {
             lock (current) {
-                current.duration = _plat.timestamp() - current.startTime;
+                current.duration = Platform.timestamp() - current.startTime;
                 Logger.log($"    ended session ({current.duration}ms/{current.keyEvents}ks)",
                     Logger.Level.Trace);
                 sessions.Add(current);
@@ -119,7 +120,7 @@ namespace niacop.Services {
                     processId = window.processId,
                     processName = proc.ProcessName,
                     processPath = proc.MainModule?.FileName,
-                    startTime = _plat.timestamp()
+                    startTime = Platform.timestamp()
                 };
                 Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
                     Logger.Level.Trace);
