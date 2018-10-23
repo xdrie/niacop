@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using niacop.Configuration;
+using niacop.Extensibility.Tracker;
 using niacop.Native;
 using niacop.Native.WindowManagers;
 using SQLite;
@@ -14,6 +15,7 @@ namespace niacop.Services {
         private string trackerDataPath;
         private string trackerDatabaseFile;
         private SQLiteConnection database;
+        private IEnumerable<ISessionEventLogger> eventLoggers;
 
         public class Session {
             [PrimaryKey, AutoIncrement]
@@ -46,6 +48,10 @@ namespace niacop.Services {
             Directory.CreateDirectory(Path.GetDirectoryName(trackerDatabaseFile));
             database = new SQLiteConnection(trackerDatabaseFile);
             database.CreateTable<Session>();
+            eventLoggers = ExtensibilityService.registry.resolveAll<ISessionEventLogger>();
+            foreach (var eventLogger in eventLoggers) {
+                eventLogger.initialize(database);
+            }
         }
 
         public void run(CancellationToken token) {
@@ -79,15 +85,29 @@ namespace niacop.Services {
             }
             // current can still be null, if gather fails
 
-            if (current != null && current.processId != window.processId) {
-                endSession();
-                gatherSession(window);
+            if (current != null) {
+                lock (current) {
+                    if (current.processId != window.processId) {
+                        // window was changed, this session is over
+                        endSession();
+                        gatherSession(window);
+                    } else {
+                        // activity events?
+                        var sc = new SessionContext {
+                            session = current,
+                            window = window
+                        };
+                        foreach (var eventLogger in eventLoggers) {
+                            eventLogger.update(sc);
+                        }
+                    }
+                }
             }
         }
 
         private void endSession() {
             lock (current) {
-                current.duration = _plat.timestamp() - current.startTime;
+                current.duration = Platform.timestamp() - current.startTime;
                 Logger.log($"    ended session ({current.duration}ms/{current.keyEvents}ks)",
                     Logger.Level.Trace);
                 sessions.Add(current);
@@ -107,7 +127,7 @@ namespace niacop.Services {
                     processId = window.processId,
                     processName = proc.ProcessName,
                     processPath = proc.MainModule?.FileName,
-                    startTime = _plat.timestamp()
+                    startTime = Platform.timestamp()
                 };
                 Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
                     Logger.Level.Trace);

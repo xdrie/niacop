@@ -1,4 +1,6 @@
-﻿namespace niacop.Configuration {
+﻿using System;
+
+namespace niacop.Configuration {
     public static class Options {
         public static string profile = "default";
         
@@ -9,6 +11,9 @@
         
         // book
         public static int browseEntries = 10;
+        
+        // plugins
+        public static string[] plugins = new string[0]; 
 
         public static void load(OptionParser optionParser) {
             profile = optionParser.get("profile");
@@ -18,6 +23,8 @@
             keylogger = bool.Parse(optionParser.get("tracker.keylogger"));
 
             browseEntries = int.Parse(optionParser.get("book.browseEntries"));
+
+            plugins = optionParser.get("plugins.plugins").Split(",", StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

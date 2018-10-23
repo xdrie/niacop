@@ -23,6 +23,6 @@ namespace niacop.Native {
             wm?.deinitialize();
         }
 
-        public long timestamp() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        public static long timestamp() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
 }
