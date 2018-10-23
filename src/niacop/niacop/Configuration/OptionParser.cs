@@ -45,7 +45,7 @@ namespace niacop.Configuration {
         }
 
         public string get(string key) {
-            return values[key];
+            return values.ContainsKey(key) ? values[key] : null;
         }
     }
 }
