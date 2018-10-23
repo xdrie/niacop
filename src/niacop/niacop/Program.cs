@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
 using niacop.Configuration;
@@ -27,6 +28,18 @@ namespace niacop {
                 var optionParser = new OptionParser();
                 optionParser.parse(configFileContent);
                 Options.load(optionParser);
+            }
+
+            // load plugins
+            Logger.log($"loading plugins", Logger.Level.Trace);
+            ExtensibilityService.loader.loadFrom(Assembly.GetExecutingAssembly());
+            foreach (var pluginContainer in Options.plugins) {
+                var asm = Assembly.Load(pluginContainer);
+                var plugins = ExtensibilityService.loader.loadFrom(asm);
+                foreach (var plugin in plugins) {
+                    // register plugin types
+                    plugin.beforeActivation(ExtensibilityService.registry);
+                }
             }
 
             var subcommand = args[0];

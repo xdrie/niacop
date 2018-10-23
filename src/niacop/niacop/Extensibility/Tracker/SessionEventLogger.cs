@@ -2,6 +2,7 @@
 
 namespace niacop.Extensibility.Tracker {
     public interface ISessionEventLogger {
+        void initialize(SQLiteConnection database);
         void update(SessionContext sc);
     }
 

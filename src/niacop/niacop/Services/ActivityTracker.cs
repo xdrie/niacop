@@ -15,6 +15,7 @@ namespace niacop.Services {
         private string trackerDataPath;
         private string trackerDatabaseFile;
         private SQLiteConnection database;
+        private IEnumerable<ISessionEventLogger> eventLoggers;
 
         public class Session {
             [PrimaryKey, AutoIncrement]
@@ -47,6 +48,10 @@ namespace niacop.Services {
             Directory.CreateDirectory(Path.GetDirectoryName(trackerDatabaseFile));
             database = new SQLiteConnection(trackerDatabaseFile);
             database.CreateTable<Session>();
+            eventLoggers = ExtensibilityService.registry.resolveAll<ISessionEventLogger>();
+            foreach (var eventLogger in eventLoggers) {
+                eventLogger.initialize(database);
+            }
         }
 
         public void run(CancellationToken token) {
@@ -92,7 +97,9 @@ namespace niacop.Services {
                             session = current,
                             window = window
                         };
-//                        el.update(sc);
+                        foreach (var eventLogger in eventLoggers) {
+                            eventLogger.update(sc);
+                        }
                     }
                 }
             }
