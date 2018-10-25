@@ -93,6 +93,9 @@ function graphActivityTimeline() {
     var startTs = convertTimestamp(start)
     var endTs = convertTimestamp(start + duration)
 
+    // upgrade old DB schema
+    if (kbCount == 0) kbCount = 1
+
     var kbRate = kbCount / (duration * 1000)
     // TODO: consider using kbRate instead
     timeline.x.push(startTs)
