@@ -101,7 +101,10 @@ function graphActivityTimeline() {
     var kbRate = kbCount / (duration * 1000)
     // TODO: consider using kbRate instead
     timeline.x.push(startTs)
-    timeline.y.push(duration / 1000)
+    let yv = duration / 1000
+    // cap Y at 3600
+    if (yv > 3600) yv = 3600
+    timeline.y.push(yv)
     var humanTime = msToTime(duration)
     timeline.text.push(`(${humanTime}/${kbCount}) - ${application} - ${title}`)
     // transform kbCount
