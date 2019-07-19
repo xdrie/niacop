@@ -28,3 +28,12 @@ for convenience, a script is provided to call `dotnet niacop.dll`. This script c
 ## platform support
 
 the window tracking features requires native support on some platforms. see the `external/` directory for sources.
+
+## useful commands
+```
+# run niacop
+niacop activity | tee ~/.log/niacop/niacop.log
+# export niacop data
+sqlite3 -header -csv ~/.local/share/niacop/profile_debugging/tracker/activity.db "select * from session;" > ~/.local/share/niacop/profile_debugging/analysis/activity.csv
+```
+
