@@ -13,11 +13,9 @@ namespace niacop.Services {
         public SQLiteConnection database;
 
         public class BookEntry {
-            [PrimaryKey, AutoIncrement]
-            public int id { get; set; }
+            [PrimaryKey, AutoIncrement] public int id { get; set; }
 
-            [Indexed]
-            public long timestamp { get; set; }
+            [Indexed] public long timestamp { get; set; }
 
             public string words { get; set; }
 
@@ -64,14 +62,16 @@ namespace niacop.Services {
                     case "2": {
                         var entries = database.Table<BookEntry>();
                         var entryCount = entries.Count();
-                        Console.WriteLine($"showing [{Math.Min(Options.browseEntries, entryCount)}/{entryCount}] entries:");
+                        Console.WriteLine(
+                            $"showing [{Math.Min(Options.browseEntries, entryCount)}/{entryCount}] entries:");
                         var recentEntries = entries.OrderByDescending(x => x.timestamp)
                             .Take(Options.browseEntries);
                         foreach (var entry in recentEntries) {
                             var localTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(entry.timestamp).ToLocalTime();
-                            Console.WriteLine($"== {localTimestamp.ToString("yyyy/MM/dd HH:mm:ss.f")} ==");
+                            Console.WriteLine($"== {localTimestamp:yyyy/MM/dd HH:mm:ss.f} ==");
                             Console.WriteLine($"    {entry.words}");
                         }
+
                         Console.WriteLine();
                     }
                         break;
