@@ -3,9 +3,7 @@
 
 a cross platform self-tracker tool
 
-## `niacop.sh` script
-
-for convenience, a script is provided to call `dotnet niacop.dll`. This script can be symlinked as needed to get `niacop` in PATH.
+niacop has been tested on windows and linux.
 
 ## config and paths
 
@@ -23,7 +21,7 @@ for convenience, a script is provided to call `dotnet niacop.dll`. This script c
 
 + an interactive mode to list words
 + an option to recall recent entries, count is configurable
-
++ run with `niacop book`
 
 ## platform support
 
