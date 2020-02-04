@@ -7,8 +7,4 @@
     <PackageReference Include="Osmium.PluginEngine" Version="1.1.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
   </ItemGroup>
-  <ItemGroup Condition="$(Configuration) == Release">
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*" />
-    <RdXmlFile Include="rd.xml" />
-  </ItemGroup>
 </Project>
