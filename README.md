@@ -28,9 +28,11 @@ on linux, niacop requires:
 
 ### book
 
-+ an interactive mode to list words
++ an interactive mode to just type words, they're split up by spaces
 + an option to recall recent entries, count is configurable
 + run with `niacop book`
+
+see [book](doc/book.md)
 
 ## platform support
 
