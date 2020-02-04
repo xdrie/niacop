@@ -63,7 +63,8 @@ namespace niacop.Services {
                         break;
                     case "2": {
                         var entries = database.Table<BookEntry>();
-                        Console.WriteLine($"showing [{Options.browseEntries}/{entries.Count()}] entries:");
+                        var entryCount = entries.Count();
+                        Console.WriteLine($"showing [{Math.Min(Options.browseEntries, entryCount)}/{entryCount}] entries:");
                         var recentEntries = entries.OrderByDescending(x => x.timestamp)
                             .Take(Options.browseEntries);
                         foreach (var entry in recentEntries) {
