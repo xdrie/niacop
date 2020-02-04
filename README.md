@@ -10,6 +10,15 @@ niacop has been tested on windows and linux.
 + configuration file is located at `~/.config/niacop/niacop.conf`
 + data is divided into profiles, stored at `~/.local/share/niacomp/<profile>/`
 
+## dependencies
+
+on linux, niacop requires:
++ `xprintidle`
++ `xprop`
++ `xdotool`
++ `xinput`
++ `xmodmap`
+
 ## modes
 
 ### activity tracking
@@ -34,4 +43,3 @@ niacop activity | tee ~/.log/niacop/niacop.log
 # export niacop data
 sqlite3 -header -csv ~/.local/share/niacop/profile_debugging/tracker/activity.db "select * from session;" > ~/.local/share/niacop/profile_debugging/analysis/activity.csv
 ```
-
