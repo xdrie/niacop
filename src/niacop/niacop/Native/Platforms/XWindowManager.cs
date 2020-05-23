@@ -7,29 +7,31 @@ using Iri.Glass.Logging;
 
 namespace niacop.Native.WindowManagers {
     public class XWindowManager : IWindowManager {
-        private Dictionary<int, string> xmodmap = new Dictionary<int, string>();
+        private Dictionary<int, string> keymap = new Dictionary<int, string>();
 
         private Process keyHookProc;
 
         public void initialize() {
             // ensure that all required commands are available
             var xprintidle = Shell.executeEval("xprintidle");
-            if (xprintidle.exitCode != 0) throw new FileNotFoundException("xprintidle was not found");
+            if (xprintidle.exitCode != 0) throw new FileNotFoundException($"{nameof(xprintidle)} was not found");
             var xprop = Shell.executeEval("xprop -version");
-            if (xprop.exitCode != 0) throw new FileNotFoundException("xprop was not found");
+            if (xprop.exitCode != 0) throw new FileNotFoundException($"{nameof(xprop)} was not found");
             var xdotool = Shell.executeEval("xdotool version");
-            if (xdotool.exitCode != 0) throw new FileNotFoundException("xdotool was not found");
+            if (xdotool.exitCode != 0) throw new FileNotFoundException($"{nameof(xdotool)} was not found");
             var xinput = Shell.executeEval("xinput list");
-            if (xinput.exitCode != 0) throw new FileNotFoundException("xinput was not found");
+            if (xinput.exitCode != 0) throw new FileNotFoundException($"{nameof(xinput)} was not found");
+            var xmodmap = Shell.executeEval("xmodmap");
+            if (xmodmap.exitCode != 0) throw new FileNotFoundException($"{nameof(xmodmap)} was not found");
 
             // store keyboard mappings
-            var xmodmapRaw = Shell.executeEval("xmodmap -pke");
-            foreach (var line in xmodmapRaw.stdout.Split('\n')) {
+            var rawKeymap = Shell.executeEval("xmodmap -pke");
+            foreach (var line in rawKeymap.stdout.Split('\n')) {
                 var cols = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 if (cols.Length < 4) continue; // missing keysym
                 var keyId = int.Parse(cols[1]);
                 var keyName = cols[3];
-                xmodmap[keyId] = keyName;
+                keymap[keyId] = keyName;
             }
         }
 
@@ -69,7 +71,7 @@ namespace niacop.Native.WindowManagers {
                 if (line != null) {
                     var lineMatch = keyEventRegex.Match(line);
                     var sysKeycode = int.Parse(lineMatch.Groups[2].Value);
-                    var keysym = xmodmap[sysKeycode];
+                    var keysym = keymap[sysKeycode];
                     callback(new KeyboardEvent {
                         pressed = lineMatch.Groups[1].Value == "press",
                         key = keysym
