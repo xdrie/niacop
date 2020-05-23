@@ -7,7 +7,6 @@ using Tomlyn.Model;
 namespace niacop {
     public class Config : TomlConfig {
         public const string CONFIG_FILE = "niacop.conf";
-        public const string VERSION = "0.5.0";
         
         public class Profile {
             public string name = "default";

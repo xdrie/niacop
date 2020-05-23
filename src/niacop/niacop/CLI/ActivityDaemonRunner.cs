@@ -1,10 +1,12 @@
 using System;
 using System.Runtime.Loader;
 using System.Threading;
+using CommandLine;
 using niacop.Services;
 
 namespace niacop.CLI {
     public class ActivityDaemonRunner : Runner<ActivityDaemonRunner.Options> {
+        [Verb("activity", HelpText = "run the activity tracker daemon.")]
         public class Options {
             
         }

@@ -9,6 +9,7 @@ using HumanDateParser = Chronic.Core.Parser;
 
 namespace niacop.CLI {
     public class TimeMachineRunner : Runner<TimeMachineRunner.Options> {
+        [Verb("timemachine", HelpText = "access the Time Machine.")]
         public class Options {
             [Value(0, MetaName = "query", HelpText = "Time query.")]
             public string? timeQuery { get; set; }

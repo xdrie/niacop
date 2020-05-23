@@ -5,7 +5,6 @@ using CommandLine;
 using niacop.CLI;
 using niacop.Extensibility;
 using niacop.Native;
-using niacop.Services;
 using CLIParser = CommandLine.Parser;
 
 namespace niacop {
@@ -13,8 +12,6 @@ namespace niacop {
         public class Options { }
 
         public static int Main(string[] args) {
-            Global.log.info($"niacop v{Config.VERSION}");
-
             // parse config file
             var configFilePath = Path.Combine(DataPaths.configBase, Config.CONFIG_FILE);
             if (File.Exists(configFilePath)) {
@@ -47,7 +44,9 @@ namespace niacop {
 
             var parserResult =
                 CLIParser.Default.ParseArguments(args, new[] {
-                    typeof(ActivityDaemonRunner.Options)
+                    typeof(ActivityDaemonRunner.Options),
+                    typeof(BookRunner.Options),
+                    typeof(TimeMachineRunner.Options)
                 });
             var parsedArgs = (parserResult as Parsed<object>)?.Value;
             switch (parsedArgs) {

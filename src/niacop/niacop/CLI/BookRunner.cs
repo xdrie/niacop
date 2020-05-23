@@ -1,7 +1,9 @@
+using CommandLine;
 using niacop.Services;
 
 namespace niacop.CLI {
     public class BookRunner : Runner<BookRunner.Options> {
+        [Verb("book", HelpText = "interact with the Book.")]
         public class Options {
             
         }
