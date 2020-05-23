@@ -10,7 +10,7 @@ namespace niacop.Configuration {
             public string name = "default";
         }
 
-        public Profile profile;
+        public Profile profile = new Profile();
 
         public class Tracker {
             public int idle = (int) TimeSpan.FromMinutes(5).TotalMilliseconds;
@@ -18,25 +18,25 @@ namespace niacop.Configuration {
             public bool keylogger = false;
         }
 
-        public Tracker tracker;
+        public Tracker tracker = new Tracker();
 
         public class Book {
             public int browseEntries = 10;
         }
 
-        public Book book;
+        public Book book = new Book();
 
         public class Log {
             public Logger.Verbosity verbosity = Logger.Verbosity.Information;
         }
 
-        public Log log;
+        public Log log = new Log();
 
         public class Ext {
             public List<string> paths = new List<string>();
         }
 
-        public Ext ext;
+        public Ext ext = new Ext();
 
         protected override void load(TomlTable tb) {
             var profileTb = tb.getTable(nameof(profile));
