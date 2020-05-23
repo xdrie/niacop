@@ -15,7 +15,7 @@ using HumanDateParser = Chronic.Core.Parser;
 namespace niacop {
     class Program {
         public const string CONFIG_FILE_NAME = "niacop.conf";
-        public const string VERSION = "0.4.4";
+        public const string VERSION = "0.4.5";
 
         static int Main(string[] args) {
             Global.log.info($"[niacop] v{VERSION}");
