@@ -2,16 +2,14 @@
 # niacop
 a cross platform self-tracker tool
 
-niacop runs in the background as a daemon and gradually gathers data on your computer usage.
-all data collection is done locally and data never leaves the host computer.
-the usage data is compiled into a local database, which can later be queried
-in such a way as to allow you to figure out what applications you were using
-at any time in the past.
+**niacop** runs in the background as a daemon and gradually gathers data on
+your computer usage. all data collection is done locally and data never leaves
+the host computer. the usage data is compiled into a local database, which can
+later be queried in such a way as to allow you to figure out what applications
+you were using at any time in the past. it can also optionally count key events
+as a metric of engagement with an application.
 
-niacop can also optionally count key events as a metric of engagement with an
-application.
-
-niacop has been tested on windows and linux.
+supports windows and linux. platform support is extensible, so theoretically macOS support could be added too.
 
 ## dependencies
 
