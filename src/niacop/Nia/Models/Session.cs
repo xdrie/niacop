@@ -20,14 +20,14 @@ namespace Nia.Models {
 
         public string prettyFormat() {
             var sb = new StringBuilder();
-            sb.AppendLine($"id: {id}");
-            sb.AppendLine($"application: {application}");
-            sb.AppendLine($"title: {windowTitle}");
-            sb.AppendLine($"processId: {processId}");
-            sb.AppendLine($"processPath: {processPath}");
-            sb.AppendLine($"startTime: {Utils.parseTimestamp(startTime).LocalDateTime}");
-            sb.AppendLine($"endTime: {Utils.parseTimestamp(endTime).LocalDateTime}");
-            sb.AppendLine($"keyEvents: {keyEvents}");
+            sb.AppendLine($"id:             {id}");
+            sb.AppendLine($"application:    {application}");
+            sb.AppendLine($"title:          {windowTitle}");
+            sb.AppendLine($"processId:      {processId}");
+            sb.AppendLine($"processPath:    {processPath}");
+            sb.AppendLine($"startTime:      {Utils.parseTimestamp(startTime).LocalDateTime}");
+            sb.AppendLine($"endTime:        {Utils.parseTimestamp(endTime).LocalDateTime}");
+            sb.AppendLine($"keyEvents:      {keyEvents}");
             return sb.ToString();
         }
     }
