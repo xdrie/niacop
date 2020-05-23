@@ -32,8 +32,7 @@ namespace niacop {
                 var config = new Config();
                 config.load(configFileContent);
                 Global.config = config;
-            }
-            else {
+            } else {
                 Global.log.err($"config file does not exist at {configFilePath}");
                 return 2;
             }
@@ -105,16 +104,17 @@ namespace niacop {
             // - start before
             // - end after
             var matchedSessions = sessionTable.Where(x =>
-                    x.startTime <= queryTimestamp && (x.endTime) >= queryTimestamp)
+                    x.startTime <= queryTimestamp && x.endTime >= queryTimestamp)
                 .ToList();
-
+            
             var preciseSess = matchedSessions.FirstOrDefault();
             if (preciseSess != null) {
+                // precise matches
                 Global.log.info($"found {matchedSessions.Count} precise match.");
                 // print the session nicely
                 Global.log.info(preciseSess.prettyFormat());
-            }
-            else {
+            } else {
+                // find close matches
                 Global.log.info($"no precise matches found.");
                 // find session immediately before and after (2x 12h range)
                 var beforeCutoff = queryDateOffset.AddHours(-12).ToUnixTimeMilliseconds();
@@ -133,26 +133,33 @@ namespace niacop {
                 var closestDist = 0L;
                 if (immBefore == null && immAfter == null) {
                     Global.log.info($"no sessions found within 12 hours of requested time.");
-                    return 0;
-                }
+                } else {
+                    var beforeDist = Math.Abs((queryTimestamp - immBefore?.endTime) ?? long.MaxValue);
+                    var afterDist = Math.Abs((queryTimestamp - immAfter?.startTime) ?? long.MaxValue);
+                    // pick the closer one
+                    if (beforeDist <= afterDist) {
+                        closest = immBefore;
+                        closestDist = beforeDist;
+                    } else {
+                        closest = immAfter;
+                        closestDist = afterDist;
+                    }
 
-                var beforeDist = Math.Abs((queryTimestamp - immBefore?.endTime) ?? long.MaxValue);
-                var afterDist = Math.Abs((queryTimestamp - immAfter?.startTime) ?? long.MaxValue);
-                // pick the closer one
-                if (beforeDist <= afterDist) {
-                    closest = immBefore;
-                    closestDist = beforeDist;
+                    // show closest session
+                    var distTimespan = TimeSpan.FromMilliseconds(closestDist);
+                    Global.log.info($"found closest session ({distTimespan}) away.");
+                    Global.log.info(closest.prettyFormat());
                 }
-                else {
-                    closest = immAfter;
-                    closestDist = afterDist;
-                }
-
-                // show closest session
-                var distTimespan = TimeSpan.FromMilliseconds(closestDist);
-                Global.log.info($"found closest session ({distTimespan}) away.");
-                Global.log.info(closest.prettyFormat());
             }
+            
+            // summarize that time period (1 hour)
+            var periodStart = queryDateOffset.AddHours(-0.5).ToUnixTimeMilliseconds();
+            var periodEnd = queryDateOffset.AddHours(0.5).ToUnixTimeMilliseconds();
+            var aroundSessions = sessionTable.Where(x => 
+                    x.startTime >= periodStart && x.endTime <= periodEnd)
+                .ToList();
+            // get the top-N apps
+            var topN = 8;
 
             return 0;
         }
