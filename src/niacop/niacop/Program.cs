@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
-using Iri.Glass.Logging;
 using niacop.Configuration;
 using niacop.Extensibility;
 using niacop.Native;
@@ -16,10 +15,10 @@ namespace niacop {
         public const string VERSION = "0.4.0";
 
         static int Main(string[] args) {
-            Console.WriteLine($"[niacop] v{VERSION}");
+            Global.log.info($"[niacop] v{VERSION}");
 
             if (args.Length < 1) {
-                Console.WriteLine("no subcommand specified.");
+                Global.log.err("no subcommand specified.");
                 return 1;
             }
 
@@ -33,10 +32,10 @@ namespace niacop {
                 Global.config = config;
             }
             else {
-                Console.WriteLine($"ERR: config file does not exist at {configFilePath}");
+                Global.log.err($"config file does not exist at {configFilePath}");
                 return 2;
             }
-            
+
             // apply config
             Global.log.verbosity = Global.config.log.verbosity;
 
@@ -78,7 +77,7 @@ namespace niacop {
         }
 
         private static void subcommandActivity() {
-            Console.WriteLine("running activity tracker");
+            Global.log.info("running activity tracker");
             var cts = new CancellationTokenSource();
             var activityDaemon = new ActivityTracker();
 
