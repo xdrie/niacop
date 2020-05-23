@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
+using Chronic.Core;
 using niacop.Extensibility;
 using niacop.Models;
 using niacop.Native;
@@ -15,7 +16,7 @@ using HumanDateParser = Chronic.Core.Parser;
 namespace niacop {
     class Program {
         public const string CONFIG_FILE_NAME = "niacop.conf";
-        public const string VERSION = "0.4.6";
+        public const string VERSION = "0.4.7";
 
         static int Main(string[] args) {
             Global.log.info($"[niacop] v{VERSION}");
@@ -89,7 +90,12 @@ namespace niacop {
 
             // get query datestamp
             var parser = new HumanDateParser();
-            var parsedDate = parser.Parse(args[0]);
+            var timeQuery = args[0];
+            var parsedDate = parser.Parse(timeQuery);
+            if (parsedDate == null) {
+                Global.log.err($"could not understand time query: {timeQuery}");
+                return 2;
+            }
             var queryDate = parsedDate.ToTime();
             Global.log.info($"query TIME MACHINE at {queryDate}");
 
