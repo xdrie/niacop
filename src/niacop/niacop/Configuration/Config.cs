@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Iri.Glass.Config;
+using Iri.Glass.Logging;
 using Tomlyn.Model;
 
 namespace niacop.Configuration {
@@ -25,6 +26,12 @@ namespace niacop.Configuration {
 
         public Book book;
 
+        public class Log {
+            public Logger.Verbosity verbosity = Logger.Verbosity.Information;
+        }
+
+        public Log log;
+
         public class Ext {
             public List<string> paths = new List<string>();
         }
@@ -39,10 +46,13 @@ namespace niacop.Configuration {
             trackerTb.autoBind(tracker);
             
             var bookTb = tb.getTable(nameof(book));
-            trackerTb.autoBind(book);
+            bookTb.autoBind(book);
             
             var extTb = tb.getTable(nameof(ext));
-            trackerTb.autoBind(ext);
+            extTb.autoBind(ext);
+            
+            var logTb = tb.getTable(nameof(log));
+            logTb.autoBind(log);
         }
     }
 }

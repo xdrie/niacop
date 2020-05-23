@@ -36,6 +36,9 @@ namespace niacop {
                 Console.WriteLine($"ERR: config file does not exist at {configFilePath}");
                 return 2;
             }
+            
+            // apply config
+            Global.log.verbosity = Global.config.log.verbosity;
 
             // load plugins
             Global.log.trace($"loading plugins");
