@@ -27,7 +27,7 @@ namespace Nia.CLI {
                 Global.log.info($"found {matchedSessions.Count()} matching entries.");
                 var lastSess = matchedSessions.Last();
                 // print the session nicely
-                Global.log.info($"most recent session: {lastSess.prettyFormat()}");
+                Global.log.info($"most recent session:\n{lastSess.prettyFormat()}");
             }
             else {
                 Global.log.err("no matching sessions.");

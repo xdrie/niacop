@@ -58,7 +58,7 @@ namespace Nia.CLI {
                 // precise matches
                 Global.log.info($"found {matchedSessions.Count} precise match.");
                 // print the session nicely
-                Global.log.info(preciseSess.prettyFormat());
+                Global.log.info($"\n{preciseSess.prettyFormat()}");
             }
             else {
                 // find close matches
