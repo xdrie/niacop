@@ -22,7 +22,5 @@ namespace niacop.Native {
         public void destroy() {
             wm?.deinitialize();
         }
-
-        public static long timestamp() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
 }

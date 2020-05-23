@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using Iri.Glass.Logging;
 using niacop.Extensibility.Tracker;
@@ -14,25 +15,37 @@ namespace niacop.Services {
         private Platform _plat;
         private string trackerDataPath;
         private string trackerDatabaseFile;
-        private SQLiteConnection database;
+        public SQLiteConnection database;
         private IEnumerable<ISessionEventLogger> eventLoggers;
 
         public class Session {
-            [PrimaryKey, AutoIncrement]
-            public int id { get; set; }
+            [PrimaryKey, AutoIncrement] public int id { get; set; }
 
-            [Indexed]
-            public string application { get; set; }
+            [Indexed] public string application { get; set; }
 
             public string windowTitle { get; set; }
             public int processId { get; set; }
             public string processName { get; set; }
             public string processPath { get; set; }
             public long startTime { get; set; }
-            public long duration { get; set; }
+            public long endTime { get; set; }
             public long keyEvents { get; set; }
+            public long getDuration() => endTime - startTime;
 
-            public override string ToString() => $"application({duration})";
+            public override string ToString() => $"application({getDuration()})";
+
+            public string friendlyFormat() {
+                var sb = new StringBuilder();
+                sb.AppendLine($"id: {id}");
+                sb.AppendLine($"application: {application}");
+                sb.AppendLine($"title: {windowTitle}");
+                sb.AppendLine($"processId: {processId}");
+                sb.AppendLine($"processPath: {processPath}");
+                sb.AppendLine($"startTime: {Utils.parseTimestamp(startTime)}");
+                sb.AppendLine($"endTime: {Utils.parseTimestamp(endTime)}");
+                sb.AppendLine($"keyEvents: {keyEvents}");
+                return sb.ToString();
+            }
         }
 
         // public List<Session> sessions = new List<Session>();
@@ -91,7 +104,8 @@ namespace niacop.Services {
                         // window was changed, this session is over
                         endSession();
                         gatherSession(window);
-                    } else {
+                    }
+                    else {
                         // activity events?
                         var sc = new SessionContext {
                             session = current,
@@ -107,8 +121,8 @@ namespace niacop.Services {
 
         private void endSession() {
             lock (current) {
-                current.duration = Platform.timestamp() - current.startTime;
-                var humanDuration = TimeSpan.FromMilliseconds(current.duration);
+                current.endTime = Utils.timestamp();
+                var humanDuration = TimeSpan.FromMilliseconds(current.getDuration());
                 Global.log.trace($"  ended session ({humanDuration.TotalSeconds:N2}s/{current.keyEvents}ks)\n");
                 // sessions.Add(current);
                 database.Update(current); // save to database
@@ -127,11 +141,12 @@ namespace niacop.Services {
                     processId = window.processId,
                     processName = proc.ProcessName,
                     processPath = proc.MainModule?.FileName,
-                    startTime = Platform.timestamp()
+                    startTime = Utils.timestamp()
                 };
                 database.Insert(current); // initially create session
                 Global.log.trace($"started session ({current.processName}/{current.application})");
-            } catch (ArgumentException) {
+            }
+            catch (ArgumentException) {
                 Global.log.warn($"process {window.processId} did not exist ({window.application})");
             }
         }

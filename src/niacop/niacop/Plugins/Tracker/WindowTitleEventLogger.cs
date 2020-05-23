@@ -28,7 +28,7 @@ namespace niacop.Plugins.Tracker {
                 // log new title event
                 Global.log.trace("  [ev] title updated");
                 database.Insert(new WindowTitleEvent {
-                    timestamp = Platform.timestamp(),
+                    timestamp = Utils.timestamp(),
                     title = sc.window.title,
                     sessionId = sc.session.id
                 });

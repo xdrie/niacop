@@ -14,7 +14,7 @@ using HumanDateParser = Chronic.Core.Parser;
 namespace niacop {
     class Program {
         public const string CONFIG_FILE_NAME = "niacop.conf";
-        public const string VERSION = "0.4.1";
+        public const string VERSION = "0.4.2";
 
         static int Main(string[] args) {
             Global.log.info($"[niacop] v{VERSION}");
@@ -85,17 +85,35 @@ namespace niacop {
                 Global.log.err("missing args");
                 return 1;
             }
+
             // get query datestamp
             var parser = new HumanDateParser();
             var parsedDate = parser.Parse(args[0]);
-            var date = parsedDate.ToTime();
-            Global.log.info($"query TIME MACHINE at {date}");
-            
+            var queryDate = parsedDate.ToTime();
+            Global.log.info($"query TIME MACHINE at {queryDate}");
+
+            // convert time to a stamp to query
+            var queryDateOffset = (DateTimeOffset) DateTime.SpecifyKind(queryDate, DateTimeKind.Local);
+            var queryTimestamp = queryDateOffset.ToUnixTimeMilliseconds();
+
             var tracker = createTracker();
-            
+
             // find candidates
-            
-            
+            var sessionTable = tracker.database.Table<ActivityTracker.Session>();
+
+            // we want any sessions that BOTH
+            // - start before
+            // - end after
+            var matchedSessions = sessionTable.Where(x =>
+                    x.startTime <= queryTimestamp && (x.endTime) >= queryTimestamp)
+                .ToList();
+
+            Global.log.info($"found {matchedSessions.Count} match.");
+            foreach (var sess in matchedSessions) {
+                // print the session nicely
+                Global.log.info(sess.friendlyFormat());
+            }
+
             return 0;
         }
 
@@ -104,7 +122,7 @@ namespace niacop {
             bookInteractive.initialize();
             bookInteractive.run();
             bookInteractive.destroy();
-            
+
             return 0;
         }
 
