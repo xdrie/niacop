@@ -54,17 +54,17 @@ namespace niacop.Services {
                         var words = rawWords.Split(' ');
                         var timestamp = Utils.timestamp();
                         var entry = new BookEntry {timestamp = timestamp, words = string.Join(',', words)};
-                        database.Insert(entry);
+                        database!.Insert(entry);
                         Console.WriteLine($"saved entry[{words.Length}] for {DateTime.Now}/{timestamp}");
                     }
                         break;
                     case "2": {
-                        var entries = database.Table<BookEntry>();
+                        var entries = database!.Table<BookEntry>();
                         var entryCount = entries.Count();
                         Console.WriteLine(
-                            $"showing [{Math.Min(Global.config.book.browseEntries, entryCount)}/{entryCount}] entries:");
+                            $"showing [{Math.Min(Global.config!.book.browseEntries, entryCount)}/{entryCount}] entries:");
                         var recentEntries = entries.OrderByDescending(x => x.timestamp)
-                            .Take(Global.config.book.browseEntries);
+                            .Take(Global.config!.book.browseEntries);
                         foreach (var entry in recentEntries) {
                             var localTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(entry.timestamp).ToLocalTime();
                             Console.WriteLine($"== {localTimestamp:yyyy/MM/dd HH:mm:ss.f} ==");
@@ -81,7 +81,7 @@ namespace niacop.Services {
         }
 
         public void destroy() {
-            database.Dispose();
+            database!.Dispose();
             _plat.destroy();
         }
     }

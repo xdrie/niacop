@@ -13,6 +13,6 @@ namespace niacop.Native {
             dataBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dataId);
         }
 
-        public static string profilePath => Path.Combine(dataBase, $"profile_{Global.config.profile.name}");
+        public static string profilePath => Path.Combine(dataBase, $"profile_{Global.config!.profile.name}");
     }
 }

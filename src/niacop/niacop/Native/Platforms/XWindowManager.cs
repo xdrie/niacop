@@ -9,7 +9,7 @@ namespace niacop.Native.WindowManagers {
     public class XWindowManager : IWindowManager {
         private Dictionary<int, string> keymap = new Dictionary<int, string>();
 
-        private Process keyHookProc;
+        private Process? keyHookProc;
 
         public void initialize() {
             // ensure that all required commands are available
@@ -66,10 +66,7 @@ namespace niacop.Native.WindowManagers {
                     var lineMatch = keyEventRegex.Match(line);
                     var sysKeycode = int.Parse(lineMatch.Groups[2].Value);
                     var keysym = keymap[sysKeycode];
-                    callback(new KeyboardEvent {
-                        pressed = lineMatch.Groups[1].Value == "press",
-                        key = keysym
-                    });
+                    callback(new KeyboardEvent(keysym, lineMatch.Groups[1].Value == "press"));
                 }
             };
         }

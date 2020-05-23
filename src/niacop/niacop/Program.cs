@@ -39,14 +39,14 @@ namespace niacop {
             }
 
             // apply config
-            Global.log.verbosity = Global.config.log.verbosity;
+            Global.log.verbosity = Global.config!.log.verbosity;
 
             // load plugins
             Global.log.trace($"loading plugins");
             var plugins = new List<INiaPlugin>();
             var defaultPlugins = Services.Extensibility.loader.LoadFrom(Assembly.GetExecutingAssembly());
             plugins.AddRange(defaultPlugins);
-            foreach (var pluginContainer in Global.config.ext.paths) {
+            foreach (var pluginContainer in Global.config!.ext.paths) {
                 var asm = Assembly.Load(pluginContainer);
                 var asmPlugins = Services.Extensibility.loader.LoadFrom(asm);
                 plugins.AddRange(asmPlugins);
@@ -99,7 +99,7 @@ namespace niacop {
             var tracker = createTracker();
 
             // find candidates
-            var sessionTable = tracker.database.Table<Session>();
+            var sessionTable = tracker.database!.Table<Session>();
 
             // we want any sessions that BOTH
             // - start before
@@ -149,13 +149,13 @@ namespace niacop {
                     // show closest session
                     var distTimespan = TimeSpan.FromMilliseconds(closestDist);
                     Global.log.info($"found closest session ({distTimespan}) away.");
-                    Global.log.info(closest.prettyFormat());
+                    Global.log.info(closest!.prettyFormat());
                 }
             }
 
             // summarize that time period (1 hour)
-            var periodStart = queryDateOffset.AddHours(-Global.config.timeMachine.period / 2).ToUnixTimeMilliseconds();
-            var periodEnd = queryDateOffset.AddHours(Global.config.timeMachine.period / 2).ToUnixTimeMilliseconds();
+            var periodStart = queryDateOffset.AddHours(-Global.config!.timeMachine.period / 2).ToUnixTimeMilliseconds();
+            var periodEnd = queryDateOffset.AddHours(Global.config!.timeMachine.period / 2).ToUnixTimeMilliseconds();
 
             var aroundSessions = sessionTable.Where(x =>
                     x.startTime >= periodStart && x.endTime <= periodEnd)
@@ -164,21 +164,21 @@ namespace niacop {
             // create usages
             var usages = new Dictionary<string, AppUsage>();
             foreach (var sess in aroundSessions) {
-                if (!usages.ContainsKey(sess.application)) {
-                    usages[sess.application] = new AppUsage(sess.application);
+                if (!usages.ContainsKey(sess.application!)) {
+                    usages[sess.application!] = new AppUsage(sess.application!);
                 }
 
                 // update entry
-                usages[sess.application].time += sess.endTime - sess.startTime;
-                usages[sess.application].keyEvents += sess.keyEvents;
+                usages[sess.application!].time += sess.endTime - sess.startTime;
+                usages[sess.application!].keyEvents += sess.keyEvents;
             }
 
             // get the top-N usages
             var topUsages = usages.Values.OrderByDescending(x => x.time)
-                .Take(Global.config.timeMachine.topN);
+                .Take(Global.config!.timeMachine.topN);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"usage summary (top {Global.config.timeMachine.topN} within {Global.config.timeMachine.period}h)");
+            sb.AppendLine($"usage summary (top {Global.config!.timeMachine.topN} within {Global.config!.timeMachine.period}h)");
             foreach (var usage in topUsages) {
                 var humanTime = TimeSpan.FromMilliseconds(usage.time);
                 sb.AppendLine($"{usage.application, -32} {humanTime, 6:mm\\:ss} // {Utils.formatNumberSI(usage.keyEvents), 8:F0} keys");

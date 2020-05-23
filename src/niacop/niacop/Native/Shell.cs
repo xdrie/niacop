@@ -13,7 +13,7 @@ namespace niacop.Native {
         }
 
         public static ShellType type;
-        private static string pathDelim;
+        private static string? pathDelim;
 
         static Shell() {
             switch (Environment.OSVersion.Platform) {
@@ -29,7 +29,7 @@ namespace niacop.Native {
                     break;
             }
         }
-        
+
         public struct ExecuteResult {
             public int exitCode;
             public string stdout;
@@ -78,13 +78,16 @@ namespace niacop.Native {
 
             return shellProcess;
         }
-        
-        public static string which(string fileName, params string[] extraPaths) {
+
+        public static string? which(string fileName, params string[] extraPaths) {
             if (File.Exists(fileName))
                 return Path.GetFullPath(fileName);
 
             var paths = new List<string>(extraPaths);
-            paths.AddRange(new List<string>(Environment.GetEnvironmentVariable("PATH")?.Split(pathDelim)));
+            var pathVar = Environment.GetEnvironmentVariable("PATH")?.Split(pathDelim);
+            if (pathVar != null) {
+                paths.AddRange(new List<string>(pathVar));
+            }
 
             foreach (var path in paths) {
                 var fullPath = Path.Combine(path, fileName);

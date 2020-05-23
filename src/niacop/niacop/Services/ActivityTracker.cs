@@ -38,20 +38,20 @@ namespace niacop.Services {
         }
 
         public void run(CancellationToken token) {
-            if (Global.config.tracker.keylogger) {
+            if (Global.config!.tracker.keylogger) {
                 runKeylogger();
             }
 
             while (!token.IsCancellationRequested) {
                 pollSession();
                 // wait 5 seconds between session polls
-                Thread.Sleep(Global.config.tracker.windowPoll);
+                Thread.Sleep(Global.config!.tracker.windowPoll);
             }
         }
 
         private void pollSession() {
             var idleTime = _plat.wm.getIdleTime();
-            if (idleTime > Global.config.tracker.idle) {
+            if (idleTime > Global.config!.tracker.idle) {
                 if (current != null) {
                     Global.log.trace($"session entered idle state ({idleTime})");
                     endSession();
@@ -83,19 +83,19 @@ namespace niacop.Services {
                         }
                         // update entry
                         current.endTime = Utils.timestamp();
-                        database.Update(current);
+                        database!.Update(current);
                     }
                 }
             }
         }
 
         private void endSession() {
-            lock (current) {
+            lock (current!) {
                 current.endTime = Utils.timestamp();
                 var humanDuration = TimeSpan.FromMilliseconds(current.getDuration());
                 Global.log.trace($"  ended session ({humanDuration.TotalSeconds:N2}s/{current.keyEvents}ks)\n");
                 // sessions.Add(current);
-                database.Update(current); // save to database
+                database!.Update(current); // save to database
                 current = null; // unset current
             }
         }
@@ -113,17 +113,20 @@ namespace niacop.Services {
                     procPath = proc.MainModule?.FileName;
                 }
 
-                current = new Session {
-                    application = window.application,
-                    windowTitle = window.title,
-                    processId = window.processId,
-                    processName = procName,
-                    processPath = procPath,
-                    startTime = timestampNow,
-                    endTime = timestampNow,
-                };
-                database.Insert(current); // initially create session
-                Global.log.trace($"started session ({current.application}/{current.processName})");
+                lock (current!) {
+                    current = new Session {
+                        application = window.application,
+                        windowTitle = window.title,
+                        processId = window.processId,
+                        processName = procName,
+                        processPath = procPath,
+                        startTime = timestampNow,
+                        endTime = timestampNow,
+                    };
+                    database!.Insert(current!); // initially create session
+                }
+
+                Global.log.trace($"started session ({current!.application}/{current!.processName})");
             }
             catch (ArgumentException) {
                 Global.log.warn($"process {window.processId} did not exist ({window.application})");
@@ -145,7 +148,7 @@ namespace niacop.Services {
         }
 
         public void destroy() {
-            database.Dispose();
+            database!.Dispose();
             _plat.destroy();
         }
     }

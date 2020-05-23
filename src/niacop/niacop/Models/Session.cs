@@ -5,12 +5,12 @@ namespace niacop.Models {
     public class Session {
         [PrimaryKey, AutoIncrement] public int id { get; set; }
 
-        [Indexed] public string application { get; set; }
+        [Indexed] public string? application { get; set; }
 
-        public string windowTitle { get; set; }
+        public string? windowTitle { get; set; }
         public int processId { get; set; }
-        public string processName { get; set; }
-        public string processPath { get; set; }
+        public string? processName { get; set; }
+        public string? processPath { get; set; }
         [Indexed] public long startTime { get; set; }
         [Indexed] public long endTime { get; set; }
         public long keyEvents { get; set; }
