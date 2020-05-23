@@ -1,5 +1,5 @@
 ﻿using System;
-using Nia.Native.WindowManagers;
+using Nia.Native.Platforms;
 
 namespace Nia.Native {
     public class Platform {

@@ -1,4 +1,4 @@
-﻿namespace Nia.Native.WindowManagers {
+﻿namespace Nia.Native {
     public class KeyboardEvent {
         public string key;
         public bool pressed;

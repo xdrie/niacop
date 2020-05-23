@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nia.Native.WindowManagers {
+namespace Nia.Native.Platforms {
     public class WinApiWindowManager : IWindowManager {
         public void initialize() {
             throw new NotImplementedException();

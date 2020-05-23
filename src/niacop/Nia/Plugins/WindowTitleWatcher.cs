@@ -1,8 +1,8 @@
-﻿using Nia.Extensibility.Tracker;
+﻿using Nia.Extensibility;
 using Nia.Models;
 using SQLite;
 
-namespace Nia.Plugins.Tracker {
+namespace Nia.Plugins {
     public class WindowTitleWatcher : SessionWatcher {
         private string? lastTitle;
 
@@ -22,7 +22,7 @@ namespace Nia.Plugins.Tracker {
         public override void update(SessionContext sc) {
             if (sc.window.title != lastTitle) {
                 // log new title event
-                Global.log.trace("  [ev] title updated");
+                sc.log("win_title", "updated");
                 database!.Insert(new WindowTitleEvent {
                     timestamp = Utils.timestamp(),
                     title = sc.window.title,

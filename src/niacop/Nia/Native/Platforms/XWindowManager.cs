@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using Iri.Glass.Logging;
 
-namespace Nia.Native.WindowManagers {
+namespace Nia.Native.Platforms {
     public class XWindowManager : IWindowManager {
         private Dictionary<int, string> keymap = new Dictionary<int, string>();
 

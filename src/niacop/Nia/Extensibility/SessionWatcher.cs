@@ -1,7 +1,7 @@
 ﻿using Nia.Models;
 using SQLite;
 
-namespace Nia.Extensibility.Tracker {
+namespace Nia.Extensibility {
     public interface ISessionWatcher {
         void initialize(SQLiteConnection database);
         void update(SessionContext sc);

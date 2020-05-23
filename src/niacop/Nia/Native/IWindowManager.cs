@@ -1,5 +1,4 @@
 ﻿using System;
-using Nia.Native.WindowManagers;
 
 namespace Nia.Native {
     public interface IWindowManager {

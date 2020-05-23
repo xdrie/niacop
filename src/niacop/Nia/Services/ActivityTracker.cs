@@ -4,10 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Iri.Glass.Logging;
-using Nia.Extensibility.Tracker;
+using Nia.Extensibility;
 using Nia.Models;
 using Nia.Native;
-using Nia.Native.WindowManagers;
 using SQLite;
 
 namespace Nia.Services {
@@ -16,7 +15,7 @@ namespace Nia.Services {
         private string trackerDataPath;
         private string trackerDatabaseFile;
         public SQLiteConnection? database;
-        private IEnumerable<ISessionWatcher> eventLoggers;
+        private IEnumerable<ISessionWatcher> watchers;
 
         // public List<Session> sessions = new List<Session>();
         public Session? current;
@@ -25,14 +24,14 @@ namespace Nia.Services {
             platform = new Platform();
             trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
             trackerDatabaseFile = Path.Combine(trackerDataPath, "activity.db");
-            eventLoggers = Extensibility.jar.ResolveAll<ISessionWatcher>();
+            watchers = Extensibility.jar.ResolveAll<ISessionWatcher>();
         }
 
         public void initialize() {
             Directory.CreateDirectory(Path.GetDirectoryName(trackerDatabaseFile));
             database = new SQLiteConnection(trackerDatabaseFile);
             database.CreateTable<Session>();
-            foreach (var eventLogger in eventLoggers) {
+            foreach (var eventLogger in watchers) {
                 eventLogger.initialize(database);
             }
         }
@@ -76,10 +75,10 @@ namespace Nia.Services {
                         gatherSession(window);
                     }
                     else {
-                        // activity events?
+                        // call each watcher
                         var sc = new SessionContext(current, window);
-                        foreach (var eventLogger in eventLoggers) {
-                            eventLogger.update(sc);
+                        foreach (var watcher in watchers) {
+                            watcher.update(sc);
                         }
 
                         // update entry
