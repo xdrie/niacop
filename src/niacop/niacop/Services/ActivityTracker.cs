@@ -35,7 +35,7 @@ namespace niacop.Services {
             public override string ToString() => $"application({duration})";
         }
 
-        public List<Session> sessions = new List<Session>();
+        // public List<Session> sessions = new List<Session>();
         public Session current;
 
         public ActivityTracker() {
@@ -110,7 +110,7 @@ namespace niacop.Services {
                 current.duration = Platform.timestamp() - current.startTime;
                 var humanDuration = TimeSpan.FromMilliseconds(current.duration);
                 Global.log.trace($"  ended session ({humanDuration.TotalSeconds:N2}s/{current.keyEvents}ks)\n");
-                sessions.Add(current);
+                // sessions.Add(current);
                 database.Update(current); // save to database
                 current = null; // unset current
             }
@@ -130,7 +130,7 @@ namespace niacop.Services {
                     startTime = Platform.timestamp()
                 };
                 database.Insert(current); // initially create session
-                Global.log.trace($"started session [{sessions.Count}] ({current.processName}/{current.application})");
+                Global.log.trace($"started session ({current.processName}/{current.application})");
             } catch (ArgumentException) {
                 Global.log.warn($"process {window.processId} did not exist ({window.application})");
             }
