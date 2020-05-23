@@ -20,6 +20,12 @@ namespace niacop {
 
         public Tracker tracker = new Tracker();
 
+        public class TimeMachine {
+            public float period = 1f; // hours
+            public int topN = 8; // top entry count
+        }
+        public TimeMachine timeMachine = new TimeMachine();
+
         public class Book {
             public int browseEntries = 10;
         }

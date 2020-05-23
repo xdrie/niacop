@@ -154,9 +154,8 @@ namespace niacop {
             }
 
             // summarize that time period (1 hour)
-            var periodHours = 1f;
-            var periodStart = queryDateOffset.AddHours(-periodHours / 2).ToUnixTimeMilliseconds();
-            var periodEnd = queryDateOffset.AddHours(periodHours / 2).ToUnixTimeMilliseconds();
+            var periodStart = queryDateOffset.AddHours(-Global.config.timeMachine.period / 2).ToUnixTimeMilliseconds();
+            var periodEnd = queryDateOffset.AddHours(Global.config.timeMachine.period / 2).ToUnixTimeMilliseconds();
 
             var aroundSessions = sessionTable.Where(x =>
                     x.startTime >= periodStart && x.endTime <= periodEnd)
@@ -177,12 +176,11 @@ namespace niacop {
             }
 
             // get the top-N usages
-            var topN = 8;
             var topUsages = usages.Values.OrderByDescending(x => x.time)
-                .Take(topN);
+                .Take(Global.config.timeMachine.topN);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"usage summary (top {topN} within {periodHours}h)");
+            sb.AppendLine($"usage summary (top {Global.config.timeMachine.topN} within {Global.config.timeMachine.period}h)");
             foreach (var usage in topUsages) {
                 var humanTime = TimeSpan.FromMilliseconds(usage.time);
                 sb.AppendLine($"{usage.application, 24}: {humanTime} // {usage.keyEvents, 5}ks");
