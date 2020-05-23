@@ -42,18 +42,21 @@ namespace niacop.Native.WindowManagers {
         }
 
         public Window getActiveWindow() {
-            var wClass = Shell.executeEval("xprop -id $(xdotool getwindowfocus) WM_CLASS | cut -d \'\"\' -f4");
-            var wTitle = Shell.executeEval("xprop -id $(xdotool getwindowfocus) _NET_WM_NAME | cut -d \'\"\' -f2");
-            var wPid = Shell.executeEval("xprop -id $(xdotool getwindowfocus) _NET_WM_PID | cut -d \' \' -f3");
+            var winClass = Shell.executeEval("xprop -id $(xdotool getwindowfocus) WM_CLASS | cut -d \'\"\' -f4");
+            var winName = Shell.executeEval("xprop -id $(xdotool getwindowfocus) _NET_WM_NAME | cut -d \'\"\' -f2");
+            var winPid =
+                Shell.executeEval(
+                    "xprop -id $(xdotool getwindowfocus) _NET_WM_PID | cut -d '=' -f 2- | awk '{$1=$1};1'");
             try {
                 return new Window {
-                    application = wClass.stdout.Trim(),
-                    processId = int.Parse(wPid.stdout.Trim()),
-                    title = wTitle.stdout.Trim()
+                    application = winClass.stdout.Trim(),
+                    processId = int.Parse(winPid.stdout.Trim()),
+                    title = winName.stdout.Trim()
                 };
             }
             catch (FormatException e) {
-                Global.log.err($"format exception: {wPid.stdout} - {e}");
+                Global.log.err($"error trying to parse window information of CLASS: {winClass}, TITLE: {winName}");
+                Global.log.err($"format exception: {winPid.stdout}, {e}");
                 return null;
             }
         }
