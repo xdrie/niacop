@@ -108,10 +108,59 @@ namespace niacop {
                     x.startTime <= queryTimestamp && (x.endTime) >= queryTimestamp)
                 .ToList();
 
-            Global.log.info($"found {matchedSessions.Count} match.");
-            foreach (var sess in matchedSessions) {
+            var preciseSess = matchedSessions.FirstOrDefault();
+            if (preciseSess != null) {
+                Global.log.info($"found {matchedSessions.Count} precise match.");
                 // print the session nicely
-                Global.log.info(sess.friendlyFormat());
+                Global.log.info(preciseSess.prettyFormat());
+            }
+            else {
+                Global.log.info($"no precise matches found.");
+                // find session immediately before and after (2x 12h range)
+                var beforeCutoff = queryDateOffset.AddHours(-12).ToUnixTimeMilliseconds();
+                var beforeSessions = sessionTable.Where(x =>
+                    x.startTime >= beforeCutoff
+                    && x.endTime <= queryTimestamp);
+                var afterCutoff = queryDateOffset.AddHours(12).ToUnixTimeMilliseconds();
+                var afterSessions = sessionTable.Where(x =>
+                    x.startTime >= queryTimestamp
+                    && x.endTime <= afterCutoff);
+                var immBefore = beforeSessions.LastOrDefault();
+                var immAfter = afterSessions.FirstOrDefault();
+
+                // compare their distance, and take the closest one
+                var closest = default(ActivityTracker.Session);
+                var closestDist = 0L;
+                if (immBefore == null && immAfter == null) {
+                    Global.log.info($"no sessions found within 12 hours of requested time.");
+                    return 0;
+                }
+                var beforeDist = Math.Abs(queryTimestamp - immBefore.endTime);
+                var afterDist = Math.Abs(queryTimestamp - immAfter.startTime);
+                if (immBefore == null) {
+                    closest = immAfter;
+                    closestDist = afterDist;
+                }
+                else if (immAfter == null) {
+                    closest = immBefore;
+                    closestDist = beforeDist;
+                }
+                else {
+                    // pick the closer one
+                    if (beforeDist <= afterDist) {
+                        closest = immBefore;
+                        closestDist = beforeDist;
+                    }
+                    else {
+                        closest = immAfter;
+                        closestDist = afterDist;
+                    }
+                }
+
+                // show closest session
+                var distTimespan = TimeSpan.FromMilliseconds(closestDist);
+                Global.log.info($"found closest session ({distTimespan}) away.");
+                Global.log.info(closest.prettyFormat());
             }
 
             return 0;

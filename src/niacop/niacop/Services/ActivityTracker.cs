@@ -27,14 +27,14 @@ namespace niacop.Services {
             public int processId { get; set; }
             public string processName { get; set; }
             public string processPath { get; set; }
-            public long startTime { get; set; }
-            public long endTime { get; set; }
+            [Indexed] public long startTime { get; set; }
+            [Indexed] public long endTime { get; set; }
             public long keyEvents { get; set; }
             public long getDuration() => endTime - startTime;
 
             public override string ToString() => $"application({getDuration()})";
 
-            public string friendlyFormat() {
+            public string prettyFormat() {
                 var sb = new StringBuilder();
                 sb.AppendLine($"id: {id}");
                 sb.AppendLine($"application: {application}");
