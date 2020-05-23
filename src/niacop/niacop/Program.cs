@@ -33,7 +33,8 @@ namespace niacop {
                 var config = new Config();
                 config.load(configFileContent);
                 Global.config = config;
-            } else {
+            }
+            else {
                 Global.log.err($"config file does not exist at {configFilePath}");
                 return 2;
             }
@@ -114,7 +115,8 @@ namespace niacop {
                 Global.log.info($"found {matchedSessions.Count} precise match.");
                 // print the session nicely
                 Global.log.info(preciseSess.prettyFormat());
-            } else {
+            }
+            else {
                 // find close matches
                 Global.log.info($"no precise matches found.");
                 // find session immediately before and after (within range)
@@ -134,15 +136,18 @@ namespace niacop {
                 var closest = default(Session);
                 var closestDist = 0L;
                 if (immBefore == null && immAfter == null) {
-                    Global.log.info($"no sessions found within {Global.config!.timeMachine.roughMatchRange:F0} hours of requested time.");
-                } else {
+                    Global.log.info(
+                        $"no sessions found within {Global.config!.timeMachine.roughMatchRange:F0} hours of requested time.");
+                }
+                else {
                     var beforeDist = Math.Abs((queryTimestamp - immBefore?.endTime) ?? long.MaxValue);
                     var afterDist = Math.Abs((queryTimestamp - immAfter?.startTime) ?? long.MaxValue);
                     // pick the closer one
                     if (beforeDist <= afterDist) {
                         closest = immBefore;
                         closestDist = beforeDist;
-                    } else {
+                    }
+                    else {
                         closest = immAfter;
                         closestDist = afterDist;
                     }
@@ -155,13 +160,15 @@ namespace niacop {
             }
 
             // summarize that time period (1 hour)
-            var periodStart = queryDateOffset.AddHours(-Global.config!.timeMachine.period / 2).ToUnixTimeMilliseconds();
-            var periodEnd = queryDateOffset.AddHours(Global.config!.timeMachine.period / 2).ToUnixTimeMilliseconds();
+            var periodStartDate = queryDateOffset.AddHours(-Global.config!.timeMachine.period / 2);
+            var periodStart = periodStartDate.ToUnixTimeMilliseconds();
+            var periodEndDate = queryDateOffset.AddHours(Global.config!.timeMachine.period / 2);
+            var periodEnd = periodEndDate.ToUnixTimeMilliseconds();
 
             var aroundSessions = sessionTable.Where(x =>
                     x.startTime >= periodStart && x.endTime <= periodEnd)
                 .ToList();
-            
+
             // create usages
             var usages = new Dictionary<string, AppUsage>();
             foreach (var sess in aroundSessions) {
@@ -179,10 +186,12 @@ namespace niacop {
                 .Take(Global.config!.timeMachine.topN);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"usage summary (top {Global.config!.timeMachine.topN} within {Global.config!.timeMachine.period:F0}h)");
+            sb.AppendLine(
+                $"usage summary (top {Global.config!.timeMachine.topN} within {Global.config!.timeMachine.period:F0}h) from {periodStartDate.DateTime:HH:mm}-{periodEndDate.DateTime:HH:mm}");
             foreach (var usage in topUsages) {
                 var humanTime = TimeSpan.FromMilliseconds(usage.time);
-                sb.AppendLine($"{usage.application, -32} {humanTime, 6:mm\\:ss} // {Utils.formatNumberSI(usage.keyEvents), 8:F0} keys");
+                sb.AppendLine(
+                    $"{usage.application,-32} {humanTime,6:mm\\:ss} // {Utils.formatNumberSI(usage.keyEvents),8:F0} keys");
             }
 
             Global.log.info(sb.ToString());
