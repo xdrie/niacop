@@ -26,6 +26,11 @@ on linux, niacop requires:
 + activity tracking mode will monitor active windows and applications and timestamps
 + run with `niacop activity`
 
+### time machine
+
++ time query for finding what window was in use at a given time
++ run with ex. `niacop timemachine "7:15 PM on May 22"`
+
 ### book
 
 + an interactive mode to just type words, they're split up by spaces
