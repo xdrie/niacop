@@ -1,7 +1,6 @@
 ﻿using Iri.Glass.Logging;
 using niacop.Extensibility.Tracker;
 using niacop.Native;
-using niacop.Services;
 using SQLite;
 
 namespace niacop.Plugins.Tracker {
@@ -27,7 +26,7 @@ namespace niacop.Plugins.Tracker {
         public override void update(SessionContext sc) {
             if (sc.window.title != lastTitle) {
                 // log new title event
-                Global.log.writeLine("        <ev [title change]", Logger.Verbosity.Trace);
+                Global.log.trace("        <ev [title change]");
                 database.Insert(new WindowTitleEvent {
                     timestamp = Platform.timestamp(),
                     title = sc.window.title,

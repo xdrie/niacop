@@ -70,7 +70,7 @@ namespace niacop.Services {
             var idleTime = _plat.wm.getIdleTime();
             if (idleTime > Global.config.tracker.idle) {
                 if (current != null) {
-                    Global.log.writeLine($"session entered idle state ({idleTime})", Logger.Verbosity.Trace);
+                    Global.log.trace($"session entered idle state ({idleTime})");
                     endSession();
                 }
 
@@ -108,8 +108,7 @@ namespace niacop.Services {
         private void endSession() {
             lock (current) {
                 current.duration = Platform.timestamp() - current.startTime;
-                Global.log.writeLine($"    ended session ({current.duration}ms/{current.keyEvents}ks)",
-                    Logger.Verbosity.Trace);
+                Global.log.trace($"    ended session ({current.duration}ms/{current.keyEvents}ks)");
                 sessions.Add(current);
                 database.Update(current); // save to database
                 current = null; // unset current
@@ -130,10 +129,9 @@ namespace niacop.Services {
                     startTime = Platform.timestamp()
                 };
                 database.Insert(current); // initially create session
-                Global.log.writeLine($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
-                    Logger.Verbosity.Trace);
+                Global.log.trace($"started new[{sessions.Count}] session ({current.processName}/{current.application})");
             } catch (ArgumentException) {
-                Global.log.writeLine($"process {window.processId} did not exist ({window.application})", Logger.Verbosity.Warning);
+                Global.log.warn($"process {window.processId} did not exist ({window.application})");
             }
         }
 

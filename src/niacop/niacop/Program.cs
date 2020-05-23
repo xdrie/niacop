@@ -26,7 +26,7 @@ namespace niacop {
             // parse options
             var configFilePath = Path.Combine(DataPaths.configBase, CONFIG_FILE_NAME);
             if (File.Exists(configFilePath)) {
-                Global.log.writeLine($"loading configuration from {configFilePath}", Logger.Verbosity.Trace);
+                Global.log.trace($"loading configuration from {configFilePath}");
                 var configFileContent = File.ReadAllText(configFilePath);
                 var config = new Config();
                 config.load(configFileContent);
@@ -38,7 +38,7 @@ namespace niacop {
             }
 
             // load plugins
-            Global.log.writeLine($"loading plugins", Logger.Verbosity.Trace);
+            Global.log.trace($"loading plugins");
             var plugins = new List<INiaPlugin>();
             var defaultPlugins = Services.Extensibility.loader.LoadFrom(Assembly.GetExecutingAssembly());
             plugins.AddRange(defaultPlugins);
@@ -82,7 +82,7 @@ namespace niacop {
             // prepare exit handler
             var unloadHandler = new Action(() => {
                 if (!cts.IsCancellationRequested) {
-                    Global.log.writeLine("recieved exit signal, cleaning up", Logger.Verbosity.Warning);
+                    Global.log.err("recieved exit signal, cleaning up");
                     cts.Cancel();
                     activityDaemon.destroy();
                 }

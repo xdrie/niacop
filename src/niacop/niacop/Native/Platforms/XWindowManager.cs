@@ -53,7 +53,7 @@ namespace niacop.Native.WindowManagers {
                 };
             }
             catch (FormatException e) {
-                Global.log.writeLine($"format exception: {wPid.stdout} - {e}", Logger.Verbosity.Error);
+                Global.log.err($"format exception: {wPid.stdout} - {e}");
                 return null;
             }
         }
