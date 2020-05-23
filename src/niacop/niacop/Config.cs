@@ -6,6 +6,9 @@ using Tomlyn.Model;
 
 namespace niacop {
     public class Config : TomlConfig {
+        public const string CONFIG_FILE = "niacop.conf";
+        public const string VERSION = "0.5.0";
+        
         public class Profile {
             public string name = "default";
         }
@@ -63,6 +66,9 @@ namespace niacop {
             
             var logTb = tb.getTable(nameof(log));
             logTb.autoBind(log);
+            
+            // apply config
+            Global.log.verbosity = log.verbosity;
         }
     }
 }
