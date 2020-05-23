@@ -135,26 +135,17 @@ namespace niacop {
                     Global.log.info($"no sessions found within 12 hours of requested time.");
                     return 0;
                 }
-                var beforeDist = Math.Abs(queryTimestamp - immBefore.endTime);
-                var afterDist = Math.Abs(queryTimestamp - immAfter.startTime);
-                if (immBefore == null) {
-                    closest = immAfter;
-                    closestDist = afterDist;
-                }
-                else if (immAfter == null) {
+
+                var beforeDist = Math.Abs((queryTimestamp - immBefore?.endTime) ?? long.MaxValue);
+                var afterDist = Math.Abs((queryTimestamp - immAfter?.startTime) ?? long.MaxValue);
+                // pick the closer one
+                if (beforeDist <= afterDist) {
                     closest = immBefore;
                     closestDist = beforeDist;
                 }
                 else {
-                    // pick the closer one
-                    if (beforeDist <= afterDist) {
-                        closest = immBefore;
-                        closestDist = beforeDist;
-                    }
-                    else {
-                        closest = immAfter;
-                        closestDist = afterDist;
-                    }
+                    closest = immAfter;
+                    closestDist = afterDist;
                 }
 
                 // show closest session
