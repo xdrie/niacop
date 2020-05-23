@@ -11,7 +11,7 @@ namespace Nia.CLI {
     public class TimeMachineRunner : Runner<TimeMachineRunner.Options> {
         [Verb("timemachine", HelpText = "access the Time Machine.")]
         public class Options {
-            [Value(0, MetaName = "query", HelpText = "Time query.")]
+            [Value(0, Required = true, MetaName = "query", HelpText = "Time query.")]
             public string? timeQuery { get; set; }
         }
 

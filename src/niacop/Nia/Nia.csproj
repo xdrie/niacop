@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <Version>0.5.0</Version>
     <Copyright>ALTiCU</Copyright>
+    <Company>ALTiCU</Company>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Chronic.Core" Version="0.3.2" />
