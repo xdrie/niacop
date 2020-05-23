@@ -73,6 +73,13 @@ namespace niacop {
             }
         }
 
+        private static ActivityTracker createTracker() {
+            var tracker = new ActivityTracker();
+            tracker.initialize();
+
+            return tracker;
+        }
+
         private static int subcommandTimeMachine(string[] args) {
             if (args.Length < 1) {
                 Global.log.err("missing args");
@@ -83,6 +90,11 @@ namespace niacop {
             var parsedDate = parser.Parse(args[0]);
             var date = parsedDate.ToTime();
             Global.log.info($"query TIME MACHINE at {date}");
+            
+            var tracker = createTracker();
+            
+            // find candidates
+            
             
             return 0;
         }
@@ -99,7 +111,7 @@ namespace niacop {
         private static int subcommandActivity(string[] args) {
             Global.log.info("running activity tracker");
             var cts = new CancellationTokenSource();
-            var activityDaemon = new ActivityTracker();
+            var activityDaemon = createTracker();
 
             // prepare exit handler
             var unloadHandler = new Action(() => {
@@ -114,7 +126,6 @@ namespace niacop {
             Console.CancelKeyPress += (s, e) => unloadHandler();
 
             // prepare and run daemon
-            activityDaemon.initialize();
             activityDaemon.run(cts.Token);
 
             return 0;
