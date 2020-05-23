@@ -39,17 +39,17 @@ namespace niacop {
             // load plugins
             Logger.log($"loading plugins", Logger.Level.Trace);
             var plugins = new List<INiaPlugin>();
-            var defaultPlugins = ExtensibilityService.loader.loadFrom(Assembly.GetExecutingAssembly());
+            var defaultPlugins = Services.Extensibility.loader.LoadFrom(Assembly.GetExecutingAssembly());
             plugins.AddRange(defaultPlugins);
             foreach (var pluginContainer in Options.plugins) {
                 var asm = Assembly.Load(pluginContainer);
-                var asmPlugins = ExtensibilityService.loader.loadFrom(asm);
+                var asmPlugins = Services.Extensibility.loader.LoadFrom(asm);
                 plugins.AddRange(asmPlugins);
             }
 
             foreach (var plugin in plugins) {
                 // register plugin types
-                plugin.beforeActivation(ExtensibilityService.registry);
+                plugin.BeforeActivation(Services.Extensibility.jar);
             }
 
             var subcommand = args[0];

@@ -48,7 +48,7 @@ namespace niacop.Services {
             Directory.CreateDirectory(Path.GetDirectoryName(trackerDatabaseFile));
             database = new SQLiteConnection(trackerDatabaseFile);
             database.CreateTable<Session>();
-            eventLoggers = ExtensibilityService.registry.resolveAll<ISessionEventLogger>();
+            eventLoggers = Extensibility.jar.ResolveAll<ISessionEventLogger>();
             foreach (var eventLogger in eventLoggers) {
                 eventLogger.initialize(database);
             }

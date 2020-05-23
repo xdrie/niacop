@@ -1,7 +1,7 @@
-﻿using Osmium.PluginEngine.Types;
+﻿using Iri.Plugin.Types;
 
 namespace niacop.Extensibility {
-    public interface INiaPlugin : IOsmiumPlugin {
+    public interface INiaPlugin : IPlugin {
         string name { get; }
     }
 }
