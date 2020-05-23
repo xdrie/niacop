@@ -26,7 +26,7 @@ namespace niacop.Plugins.Tracker {
         public override void update(SessionContext sc) {
             if (sc.window.title != lastTitle) {
                 // log new title event
-                Global.log.trace("        <ev [title change]");
+                Global.log.trace("  [ev] title updated");
                 database.Insert(new WindowTitleEvent {
                     timestamp = Platform.timestamp(),
                     title = sc.window.title,
