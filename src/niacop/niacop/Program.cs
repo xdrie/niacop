@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
@@ -8,11 +9,12 @@ using niacop.Configuration;
 using niacop.Extensibility;
 using niacop.Native;
 using niacop.Services;
+using HumanDateParser = Chronic.Core.Parser;
 
 namespace niacop {
     class Program {
         public const string CONFIG_FILE_NAME = "niacop.conf";
-        public const string VERSION = "0.4.0";
+        public const string VERSION = "0.4.1";
 
         static int Main(string[] args) {
             Global.log.info($"[niacop] v{VERSION}");
@@ -56,27 +58,45 @@ namespace niacop {
             }
 
             var subcommand = args[0];
+            var subArgs = args.Skip(1).ToArray();
 
             switch (subcommand) {
                 case "activity":
-                    subcommandActivity();
-                    break;
+                    return subcommandActivity(subArgs);
                 case "book":
-                    subcommandBook();
-                    break;
+                    return subcommandBook(subArgs);
+                case "timemachine":
+                    return subcommandTimeMachine(subArgs);
+                default:
+                    Global.log.err($"unrecognized subcommand: {subcommand}");
+                    return 3;
             }
+        }
 
+        private static int subcommandTimeMachine(string[] args) {
+            if (args.Length < 1) {
+                Global.log.err("missing args");
+                return 1;
+            }
+            // get query datestamp
+            var parser = new HumanDateParser();
+            var parsedDate = parser.Parse(args[0]);
+            var date = parsedDate.ToTime();
+            Global.log.info($"query TIME MACHINE at {date}");
+            
             return 0;
         }
 
-        private static void subcommandBook() {
+        private static int subcommandBook(string[] args) {
             var bookInteractive = new BookInteractive();
             bookInteractive.initialize();
             bookInteractive.run();
             bookInteractive.destroy();
+            
+            return 0;
         }
 
-        private static void subcommandActivity() {
+        private static int subcommandActivity(string[] args) {
             Global.log.info("running activity tracker");
             var cts = new CancellationTokenSource();
             var activityDaemon = new ActivityTracker();
@@ -96,6 +116,8 @@ namespace niacop {
             // prepare and run daemon
             activityDaemon.initialize();
             activityDaemon.run(cts.Token);
+
+            return 0;
         }
     }
 }
