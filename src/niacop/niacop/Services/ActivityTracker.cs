@@ -105,18 +105,25 @@ namespace niacop.Services {
             // detect process path
             try {
                 var timestampNow = Utils.timestamp();
-                var proc = Process.GetProcessById(window.processId);
+                var procName = default(string);
+                var procPath = default(string);
+                if (window.processId > 0) {
+                    var proc = Process.GetProcessById(window.processId);
+                    procName = proc.ProcessName;
+                    procPath = proc.MainModule?.FileName;
+                }
+
                 current = new Session {
                     application = window.application,
                     windowTitle = window.title,
                     processId = window.processId,
-                    processName = proc.ProcessName,
-                    processPath = proc.MainModule?.FileName,
+                    processName = procName,
+                    processPath = procPath,
                     startTime = timestampNow,
                     endTime = timestampNow,
                 };
                 database.Insert(current); // initially create session
-                Global.log.trace($"started session ({current.processName}/{current.application})");
+                Global.log.trace($"started session ({current.application}/{current.processName})");
             }
             catch (ArgumentException) {
                 Global.log.warn($"process {window.processId} did not exist ({window.application})");

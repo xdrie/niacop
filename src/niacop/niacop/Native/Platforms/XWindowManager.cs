@@ -43,20 +43,17 @@ namespace niacop.Native.WindowManagers {
 
         public Window getActiveWindow() {
             var winClass = Shell.executeEval("xprop -id $(xdotool getwindowfocus) WM_CLASS | cut -d \'\"\' -f4");
-            var winName = Shell.executeEval("xprop -id $(xdotool getwindowfocus) _NET_WM_NAME | cut -d \'\"\' -f2");
+            var winName = Shell.executeEval("xprop -id $(xdotool getwindowfocus) WM_NAME | cut -d \'\"\' -f2");
             var winPid = Shell.executeEval("xdotool getwindowfocus getwindowpid");
-            try {
-                return new Window {
-                    application = winClass.stdout.Trim(),
-                    processId = int.Parse(winPid.stdout.Trim()),
-                    title = winName.stdout.Trim()
-                };
-            }
-            catch (FormatException e) {
-                Global.log.err($"error trying to parse window information of CLASS: {winClass}, TITLE: {winName}");
-                Global.log.err($"format exception: {winPid.stdout}, {e}");
-                return null;
-            }
+            var processId = 0;
+            int.TryParse(winPid.stdout.Trim(), out processId);
+            var window = new Window {
+                application = winClass.stdout.Trim(),
+                processId = processId,
+                title = winName.stdout.Trim()
+            };
+
+            return window;
         }
 
         public void hookUserEvents(Action<KeyboardEvent> callback) {
