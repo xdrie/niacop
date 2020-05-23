@@ -38,12 +38,31 @@ dotnet build -c Release
 this will create `./Nia`, which you should symlink to somewhere in your path as `niacop`.
 then, you can use `niacop` to invoke the program.
 
+## config/paths
+
++ configuration file is located at `~/.config/niacop/niacop.conf` (linux) or in `AppData` (windows)
++ data is divided into profiles, stored at `~/.local/share/niacomp/<profile>/` (linux)
+
+sample config:
+```
+[profile]
+name="test1"
+ 
+[tracker]
+# defaults
+
+[log]
+verbosity = "trace"
+```
+for reference, see the [config model](src/niacop/Nia/Config.cs).
+
 ## modes
 
-### activity tracking
+### activity tracking/daemon
 
 + activity tracking mode will monitor active windows and applications and timestamps
 + run with `niacop activity`
++ ideally, fork it to the background
 
 ### time machine
 
@@ -57,11 +76,6 @@ then, you can use `niacop` to invoke the program.
 + run with `niacop book`
 
 see [book](doc/book.md)
-
-## config/paths
-
-+ configuration file is located at `~/.config/niacop/niacop.conf` (linux) or in `AppData` (windows)
-+ data is divided into profiles, stored at `~/.local/share/niacomp/<profile>/` (linux)
 
 ## useful commands
 
