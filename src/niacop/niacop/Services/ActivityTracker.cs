@@ -84,6 +84,9 @@ namespace niacop.Services {
                         foreach (var eventLogger in eventLoggers) {
                             eventLogger.update(sc);
                         }
+                        // update entry
+                        current.endTime = Utils.timestamp();
+                        database.Update(current);
                     }
                 }
             }
