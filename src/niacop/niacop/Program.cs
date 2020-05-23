@@ -50,14 +50,20 @@ namespace niacop {
                 });
             var parsedArgs = (parserResult as Parsed<object>)?.Value;
             switch (parsedArgs) {
-                case ActivityDaemonRunner.Options options:
-                    return new ActivityDaemonRunner().run(options);
-                case TimeMachineRunner.Options options:
-                    return new TimeMachineRunner().run(options);
-                case BookRunner.Options options:
-                    return new BookRunner().run(options);
+                case ActivityDaemonRunner.Options options: {
+                    using var runner = new ActivityDaemonRunner();
+                    return runner.run(options);
+                }
+                case TimeMachineRunner.Options options: {
+                    using var runner = new TimeMachineRunner();
+                    return runner.run(options);
+                }
+                case BookRunner.Options options: {
+                    using var runner = new BookRunner();
+                    return runner.run(options);
+                }
                 default:
-                    return 1;
+                    return -1;
             }
         }
     }
