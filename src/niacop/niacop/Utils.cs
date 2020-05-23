@@ -32,11 +32,14 @@ namespace niacop {
             var degree = (int) Math.Floor(Math.Log10(Math.Abs(d)) / 3);
             var scaled = d * Math.Pow(1000, -degree);
 
-            char? prefix = Math.Sign(degree) switch {
-                1 => incPrefixes[degree - 1],
-                -1 => decPrefixes[-degree - 1],
-                _ => null
-            };
+            char? prefix = null;
+            if (Math.Abs(scaled) >= double.Epsilon) {
+                 prefix = Math.Sign(degree) switch {
+                    1 => incPrefixes[degree - 1],
+                    -1 => decPrefixes[-degree - 1],
+                    _ => null
+                };
+            }
 
             return new SINumber(prefix, scaled);
         }
