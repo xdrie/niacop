@@ -13,7 +13,7 @@ using niacop.Services;
 namespace niacop {
     class Program {
         public const string CONFIG_FILE_NAME = "niacop.conf";
-        public const string VERSION = "0.3.4";
+        public const string VERSION = "0.4.0";
 
         static int Main(string[] args) {
             Console.WriteLine($"[niacop] v{VERSION}");

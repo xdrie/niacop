@@ -129,7 +129,7 @@ namespace niacop.Services {
                     startTime = Platform.timestamp()
                 };
                 database.Insert(current); // initially create session
-                Global.log.trace($"started new[{sessions.Count}] session ({current.processName}/{current.application})");
+                Global.log.trace($"started new session [{sessions.Count}] ({current.processName}/{current.application})");
             } catch (ArgumentException) {
                 Global.log.warn($"process {window.processId} did not exist ({window.application})");
             }
