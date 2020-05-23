@@ -15,7 +15,7 @@ using HumanDateParser = Chronic.Core.Parser;
 namespace niacop {
     class Program {
         public const string CONFIG_FILE_NAME = "niacop.conf";
-        public const string VERSION = "0.4.5";
+        public const string VERSION = "0.4.6";
 
         static int Main(string[] args) {
             Global.log.info($"[niacop] v{VERSION}");
@@ -117,12 +117,13 @@ namespace niacop {
             } else {
                 // find close matches
                 Global.log.info($"no precise matches found.");
-                // find session immediately before and after (2x 12h range)
-                var beforeCutoff = queryDateOffset.AddHours(-12).ToUnixTimeMilliseconds();
+                // find session immediately before and after (within range)
+                var roughMatchDist = Global.config!.timeMachine.roughMatchRange / 2f;
+                var beforeCutoff = queryDateOffset.AddHours(-roughMatchDist).ToUnixTimeMilliseconds();
                 var beforeSessions = sessionTable.Where(x =>
                     x.startTime >= beforeCutoff
                     && x.endTime <= queryTimestamp);
-                var afterCutoff = queryDateOffset.AddHours(12).ToUnixTimeMilliseconds();
+                var afterCutoff = queryDateOffset.AddHours(roughMatchDist).ToUnixTimeMilliseconds();
                 var afterSessions = sessionTable.Where(x =>
                     x.startTime >= queryTimestamp
                     && x.endTime <= afterCutoff);
@@ -133,7 +134,7 @@ namespace niacop {
                 var closest = default(Session);
                 var closestDist = 0L;
                 if (immBefore == null && immAfter == null) {
-                    Global.log.info($"no sessions found within 12 hours of requested time.");
+                    Global.log.info($"no sessions found within {Global.config!.timeMachine.roughMatchRange:F0} hours of requested time.");
                 } else {
                     var beforeDist = Math.Abs((queryTimestamp - immBefore?.endTime) ?? long.MaxValue);
                     var afterDist = Math.Abs((queryTimestamp - immAfter?.startTime) ?? long.MaxValue);
@@ -178,7 +179,7 @@ namespace niacop {
                 .Take(Global.config!.timeMachine.topN);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"usage summary (top {Global.config!.timeMachine.topN} within {Global.config!.timeMachine.period}h)");
+            sb.AppendLine($"usage summary (top {Global.config!.timeMachine.topN} within {Global.config!.timeMachine.period:F0}h)");
             foreach (var usage in topUsages) {
                 var humanTime = TimeSpan.FromMilliseconds(usage.time);
                 sb.AppendLine($"{usage.application, -32} {humanTime, 6:mm\\:ss} // {Utils.formatNumberSI(usage.keyEvents), 8:F0} keys");
