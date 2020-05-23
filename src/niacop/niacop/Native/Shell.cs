@@ -13,19 +13,19 @@ namespace niacop.Native {
         }
 
         public static ShellType type;
-        private static string _pathDelimiter;
+        private static string pathDelim;
 
         static Shell() {
             switch (Environment.OSVersion.Platform) {
                 case PlatformID.Win32NT:
                     type = ShellType.Windows;
-                    _pathDelimiter = ";";
+                    pathDelim = ";";
                     break;
 
                 case PlatformID.Unix:
                 case PlatformID.MacOSX:
                     type = ShellType.Unix;
-                    _pathDelimiter = ":";
+                    pathDelim = ":";
                     break;
             }
         }
@@ -84,7 +84,7 @@ namespace niacop.Native {
                 return Path.GetFullPath(fileName);
 
             var paths = new List<string>(extraPaths);
-            paths.AddRange(new List<string>(Environment.GetEnvironmentVariable("PATH")?.Split(_pathDelimiter)));
+            paths.AddRange(new List<string>(Environment.GetEnvironmentVariable("PATH")?.Split(pathDelim)));
 
             foreach (var path in paths) {
                 var fullPath = Path.Combine(path, fileName);

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Threading;
+using niacop.Native.WindowManagers;
 
-namespace niacop.Native.WindowManagers {
+namespace niacop.Native {
     public interface IWindowManager {
         /// <summary>
         /// initialize the window manager reader

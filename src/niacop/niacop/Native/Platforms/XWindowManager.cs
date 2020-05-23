@@ -12,7 +12,7 @@ namespace niacop.Native.WindowManagers {
         private Process keyHookProc;
 
         public void initialize() {
-            // ensure that both required commands are available
+            // ensure that all required commands are available
             var xprintidle = Shell.executeEval("xprintidle");
             if (xprintidle.exitCode != 0) throw new FileNotFoundException("xprintidle was not found");
             var xprop = Shell.executeEval("xprop -version");
