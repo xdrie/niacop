@@ -183,7 +183,7 @@ namespace niacop {
             sb.AppendLine($"usage summary (top {Global.config.timeMachine.topN} within {Global.config.timeMachine.period}h)");
             foreach (var usage in topUsages) {
                 var humanTime = TimeSpan.FromMilliseconds(usage.time);
-                sb.AppendLine($"{usage.application, 24}: {humanTime} // {usage.keyEvents, 5}ks");
+                sb.AppendLine($"{usage.application, -32} {humanTime, 6:mm\\:ss} // {Utils.formatNumberSI(usage.keyEvents), 8:F0} keys");
             }
 
             Global.log.info(sb.ToString());
