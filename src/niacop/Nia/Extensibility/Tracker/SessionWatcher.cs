@@ -1,12 +1,13 @@
-﻿using SQLite;
+﻿using Nia.Models;
+using SQLite;
 
 namespace Nia.Extensibility.Tracker {
-    public interface ISessionEventLogger {
+    public interface ISessionWatcher {
         void initialize(SQLiteConnection database);
         void update(SessionContext sc);
     }
 
-    public abstract class SessionEventLogger : ISessionEventLogger {
+    public abstract class SessionWatcher : ISessionWatcher {
         protected SQLiteConnection? database;
 
         public virtual void initialize(SQLiteConnection database) {

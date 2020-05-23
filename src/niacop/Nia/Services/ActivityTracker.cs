@@ -16,7 +16,7 @@ namespace Nia.Services {
         private string trackerDataPath;
         private string trackerDatabaseFile;
         public SQLiteConnection? database;
-        private IEnumerable<ISessionEventLogger> eventLoggers;
+        private IEnumerable<ISessionWatcher> eventLoggers;
 
         // public List<Session> sessions = new List<Session>();
         public Session? current;
@@ -25,7 +25,7 @@ namespace Nia.Services {
             platform = new Platform();
             trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
             trackerDatabaseFile = Path.Combine(trackerDataPath, "activity.db");
-            eventLoggers = Extensibility.jar.ResolveAll<ISessionEventLogger>();
+            eventLoggers = Extensibility.jar.ResolveAll<ISessionWatcher>();
         }
 
         public void initialize() {

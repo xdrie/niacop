@@ -1,8 +1,9 @@
 ﻿using Nia.Extensibility.Tracker;
+using Nia.Models;
 using SQLite;
 
 namespace Nia.Plugins.Tracker {
-    public class WindowTitleEventLogger : SessionEventLogger {
+    public class WindowTitleWatcher : SessionWatcher {
         private string? lastTitle;
 
         public class WindowTitleEvent {

@@ -7,7 +7,7 @@ namespace Nia.Plugins.Tracker {
         public string name => "default trackers";
         
         public void BeforeActivation(CookieJar jar) {
-            jar.Register<ISessionEventLogger>(new WindowTitleEventLogger());
+            jar.Register<ISessionWatcher>(new WindowTitleWatcher());
         }
     }
 }

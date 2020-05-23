@@ -1,8 +1,6 @@
-﻿using Nia.Models;
-using Nia.Native.WindowManagers;
-using Nia.Services;
+﻿using Nia.Native.WindowManagers;
 
-namespace Nia.Extensibility.Tracker {
+namespace Nia.Models {
     public class SessionContext {
         public Session session;
         public Window window;
