@@ -19,6 +19,13 @@ on linux, niacop requires:
 + `xinput`
 + `xmodmap`
 
+## build
+
+```
+cd src/niacop
+dotnet build -c Release
+```
+
 ## modes
 
 ### activity tracking
@@ -28,7 +35,7 @@ on linux, niacop requires:
 
 ### time machine
 
-+ time query for finding what window was in use at a given time
++ time query for finding what applications were in use at a given time
 + run with ex. `niacop timemachine "7:15 PM on May 22"`
 
 ### book
