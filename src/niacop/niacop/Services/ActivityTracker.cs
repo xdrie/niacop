@@ -108,7 +108,8 @@ namespace niacop.Services {
         private void endSession() {
             lock (current) {
                 current.duration = Platform.timestamp() - current.startTime;
-                Global.log.trace($"    ended session ({current.duration}ms/{current.keyEvents}ks)");
+                var humanDuration = TimeSpan.FromMilliseconds(current.duration);
+                Global.log.trace($"    ended session ({humanDuration.TotalSeconds:N2}s/{current.keyEvents}ks)");
                 sessions.Add(current);
                 database.Update(current); // save to database
                 current = null; // unset current
