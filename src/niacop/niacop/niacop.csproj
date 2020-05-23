@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Osmium.PluginEngine" Version="1.1.0" />
+    <PackageReference Include="Iri.Glass" Version="0.1.0" />
+    <PackageReference Include="Iri.Plugin" Version="1.1.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
   </ItemGroup>
 </Project>

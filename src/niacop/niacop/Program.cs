@@ -75,14 +75,14 @@ namespace niacop {
 
         private static void subcommandActivity() {
             Console.WriteLine("running activity tracker");
-            var activityDaemonTokenSource = new CancellationTokenSource();
+            var cts = new CancellationTokenSource();
             var activityDaemon = new ActivityTracker();
 
             // prepare exit handler
             var unloadHandler = new Action(() => {
-                if (!activityDaemonTokenSource.IsCancellationRequested) {
+                if (!cts.IsCancellationRequested) {
                     Logger.log("recieved exit signal, cleaning up", Logger.Level.Warning);
-                    activityDaemonTokenSource.Cancel();
+                    cts.Cancel();
                     activityDaemon.destroy();
                 }
             });
@@ -92,7 +92,7 @@ namespace niacop {
 
             // prepare and run daemon
             activityDaemon.initialize();
-            activityDaemon.run(activityDaemonTokenSource.Token);
+            activityDaemon.run(cts.Token);
         }
     }
 }
