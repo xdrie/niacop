@@ -41,8 +41,8 @@ namespace niacop.Services {
                 sb.AppendLine($"title: {windowTitle}");
                 sb.AppendLine($"processId: {processId}");
                 sb.AppendLine($"processPath: {processPath}");
-                sb.AppendLine($"startTime: {Utils.parseTimestamp(startTime)}");
-                sb.AppendLine($"endTime: {Utils.parseTimestamp(endTime)}");
+                sb.AppendLine($"startTime: {Utils.parseTimestamp(startTime).LocalDateTime}");
+                sb.AppendLine($"endTime: {Utils.parseTimestamp(endTime).LocalDateTime}");
                 sb.AppendLine($"keyEvents: {keyEvents}");
                 return sb.ToString();
             }
