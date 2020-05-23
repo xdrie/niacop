@@ -10,13 +10,11 @@ namespace Nia.CLI {
         [Verb("book", HelpText = "interact with the Book.")]
         public class Options { }
 
-        private Platform platform;
         public string bookDataPath;
         public string bookDatabaseFile;
         public SQLiteConnection? database;
 
         public BookRunner() {
-            platform = new Platform();
             bookDataPath = Path.Combine(DataPaths.profilePath, "book");
             bookDatabaseFile = Path.Combine(bookDataPath, "data.db");
         }
@@ -76,7 +74,6 @@ namespace Nia.CLI {
         public override void Dispose() {
             base.Dispose();
             database!.Dispose();
-            platform.destroy();
         }
     }
 }
