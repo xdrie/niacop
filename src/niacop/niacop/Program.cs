@@ -165,9 +165,7 @@ namespace niacop {
             var usages = new Dictionary<string, AppUsage>();
             foreach (var sess in aroundSessions) {
                 if (!usages.ContainsKey(sess.application)) {
-                    usages[sess.application] = new AppUsage {
-                        application = sess.application
-                    };
+                    usages[sess.application] = new AppUsage(sess.application);
                 }
 
                 // update entry

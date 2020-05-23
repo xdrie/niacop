@@ -77,10 +77,7 @@ namespace niacop.Services {
                     }
                     else {
                         // activity events?
-                        var sc = new SessionContext {
-                            session = current,
-                            window = window
-                        };
+                        var sc = new SessionContext(current, window);
                         foreach (var eventLogger in eventLoggers) {
                             eventLogger.update(sc);
                         }

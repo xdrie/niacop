@@ -47,11 +47,7 @@ namespace niacop.Native.WindowManagers {
             var winPid = Shell.executeEval("xdotool getwindowfocus getwindowpid");
             var processId = 0;
             int.TryParse(winPid.stdout.Trim(), out processId);
-            var window = new Window {
-                application = winClass.stdout.Trim(),
-                processId = processId,
-                title = winName.stdout.Trim()
-            };
+            var window = new Window(winClass.stdout.Trim(), winName.stdout.Trim(), processId);
 
             return window;
         }
