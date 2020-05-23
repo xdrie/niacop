@@ -22,13 +22,6 @@ namespace Nia {
 
         public Tracker tracker = new Tracker();
 
-        public class TimeMachine {
-            public float period = 1f; // hours
-            public float roughMatchRange = 24f; // hours
-            public int topN = 8; // top entry count
-        }
-        public TimeMachine timeMachine = new TimeMachine();
-
         public class Book {
             public int browseEntries = 10;
         }
@@ -53,9 +46,6 @@ namespace Nia {
 
             var trackerTb = tb.getTable(nameof(tracker));
             trackerTb.autoBind(tracker);
-            
-            var timeMachineTb = tb.getTable(nameof(timeMachine));
-            timeMachineTb.autoBind(timeMachine);
             
             var bookTb = tb.getTable(nameof(book));
             bookTb.autoBind(book);

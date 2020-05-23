@@ -13,6 +13,15 @@ namespace Nia.CLI {
         public class Options {
             [Value(0, Required = true, MetaName = "query", HelpText = "Time query.")]
             public string? timeQuery { get; set; }
+
+            [Option('p', "period", Required = false, HelpText = "The period of time (in hours) to show usage summary for.")]
+            public float period { get; set; } = 1f; // hours
+
+            [Option('r', "range", Required = false, HelpText = "The time range (in hours) to look for sessions in for rough-matching.")]
+            public float roughMatchRange { get; set; } = 24f; // hours
+
+            [Option('n', "entries", Required = false, HelpText = "The number of top entries in the usage summary.")]
+            public int topN { get; set; } = 8; // top entry count
         }
 
         public override int run(Options options) {
@@ -55,7 +64,7 @@ namespace Nia.CLI {
                 // find close matches
                 Global.log.info($"no precise matches found.");
                 // find session immediately before and after (within range)
-                var roughMatchDist = Global.config!.timeMachine.roughMatchRange / 2f;
+                var roughMatchDist = options.roughMatchRange / 2f;
                 var beforeCutoff = queryDateOffset.AddHours(-roughMatchDist).ToUnixTimeMilliseconds();
                 var beforeSessions = sessionTable.Where(x =>
                     x.startTime >= beforeCutoff
@@ -72,7 +81,7 @@ namespace Nia.CLI {
                 var closestDist = 0L;
                 if (immBefore == null && immAfter == null) {
                     Global.log.info(
-                        $"no sessions found within {Global.config!.timeMachine.roughMatchRange:F0} hours of requested time.");
+                        $"no sessions found within {options.roughMatchRange:F0} hours of requested time.");
                 }
                 else {
                     var beforeDist = Math.Abs((queryTimestamp - immBefore?.endTime) ?? long.MaxValue);
@@ -95,9 +104,9 @@ namespace Nia.CLI {
             }
 
             // summarize that time period (1 hour)
-            var periodStartDate = queryDateOffset.AddHours(-Global.config!.timeMachine.period / 2);
+            var periodStartDate = queryDateOffset.AddHours(-options.period / 2);
             var periodStart = periodStartDate.ToUnixTimeMilliseconds();
-            var periodEndDate = queryDateOffset.AddHours(Global.config!.timeMachine.period / 2);
+            var periodEndDate = queryDateOffset.AddHours(options.period / 2);
             var periodEnd = periodEndDate.ToUnixTimeMilliseconds();
 
             var aroundSessions = sessionTable.Where(x =>
@@ -118,11 +127,11 @@ namespace Nia.CLI {
 
             // get the top-N usages
             var topUsages = usages.Values.OrderByDescending(x => x.time)
-                .Take(Global.config!.timeMachine.topN);
+                .Take(options.topN);
 
             var sb = new StringBuilder();
             sb.AppendLine(
-                $"usage summary (top {Global.config!.timeMachine.topN} within {Global.config!.timeMachine.period:F0}h) from {periodStartDate.DateTime:HH:mm}-{periodEndDate.DateTime:HH:mm}");
+                $"usage summary (top {options.topN} within {options.period:F0}h) from {periodStartDate.DateTime:HH:mm}-{periodEndDate.DateTime:HH:mm}");
             foreach (var usage in topUsages) {
                 var humanTime = TimeSpan.FromMilliseconds(usage.time);
                 sb.AppendLine(
