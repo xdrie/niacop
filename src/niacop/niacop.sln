@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "niacop", "niacop\niacop.csproj", "{4E276B1E-AA1E-4411-BD9A-96032594B57B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nia", "Nia\Nia.csproj", "{4E276B1E-AA1E-4411-BD9A-96032594B57B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
