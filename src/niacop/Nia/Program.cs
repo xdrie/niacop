@@ -9,8 +9,6 @@ using CLIParser = CommandLine.Parser;
 
 namespace Nia {
     class Program {
-        public class Options { }
-
         public static int Main(string[] args) {
             // parse config file
             var configFilePath = Path.Combine(DataPaths.configBase, Config.CONFIG_FILE);
@@ -46,7 +44,8 @@ namespace Nia {
                 CLIParser.Default.ParseArguments(args, new[] {
                     typeof(ActivityDaemonRunner.Options),
                     typeof(BookRunner.Options),
-                    typeof(TimeMachineRunner.Options)
+                    typeof(TimeMachineRunner.Options),
+                    typeof(LastRunner.Options)
                 });
             var parsedArgs = (parserResult as Parsed<object>)?.Value;
             switch (parsedArgs) {
@@ -60,6 +59,10 @@ namespace Nia {
                 }
                 case BookRunner.Options options: {
                     using var runner = new BookRunner();
+                    return runner.run(options);
+                }
+                case LastRunner.Options options: {
+                    using var runner = new LastRunner();
                     return runner.run(options);
                 }
                 default:
