@@ -12,7 +12,7 @@ using SQLite;
 
 namespace Nia.Services {
     public class ActivityTracker {
-        private Platform _plat;
+        private Platform platform;
         private string trackerDataPath;
         private string trackerDatabaseFile;
         public SQLiteConnection? database;
@@ -22,7 +22,7 @@ namespace Nia.Services {
         public Session? current;
 
         public ActivityTracker() {
-            _plat = new Platform();
+            platform = new Platform();
             trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
             trackerDatabaseFile = Path.Combine(trackerDataPath, "activity.db");
             eventLoggers = Extensibility.jar.ResolveAll<ISessionEventLogger>();
@@ -50,7 +50,7 @@ namespace Nia.Services {
         }
 
         private void pollSession() {
-            var idleTime = _plat.wm.getIdleTime();
+            var idleTime = platform.wm.getIdleTime();
             if (idleTime > Global.config!.tracker.idle) {
                 if (current != null) {
                     Global.log.trace($"session entered idle state ({idleTime})");
@@ -60,7 +60,7 @@ namespace Nia.Services {
                 return;
             }
 
-            var window = _plat.wm.getActiveWindow();
+            var window = platform.wm.getActiveWindow();
             if (window == null) return;
 
             if (current == null) {
@@ -144,7 +144,7 @@ namespace Nia.Services {
         }
 
         private void runKeylogger() {
-            _plat.wm.hookUserEvents(globalKeyEvent);
+            platform.wm.hookUserEvents(globalKeyEvent);
         }
 
         private void globalKeyEvent(KeyboardEvent kev) {
@@ -159,7 +159,7 @@ namespace Nia.Services {
 
         public void destroy() {
             database!.Dispose();
-            _plat.destroy();
+            platform.destroy();
         }
     }
 }
