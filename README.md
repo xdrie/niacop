@@ -9,7 +9,10 @@ later be queried in such a way as to allow you to figure out what applications
 you were using at any time in the past. it can also optionally count key events
 as a metric of engagement with an application.
 
-supports windows and linux. platform support is extensible, so theoretically macOS support could be added too.
+supports windows via Win32 and linux via X11.
+platform support is extensible, so theoretically more platforms could also be added.
+
+extensively tested on an Arch Linux install, using the i3 window manager.
 
 ## dependencies
 
