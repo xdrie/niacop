@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text;
 using System.Threading;
 using niacop.Extensibility;
 using niacop.Models;
@@ -106,7 +107,7 @@ namespace niacop {
             var matchedSessions = sessionTable.Where(x =>
                     x.startTime <= queryTimestamp && x.endTime >= queryTimestamp)
                 .ToList();
-            
+
             var preciseSess = matchedSessions.FirstOrDefault();
             if (preciseSess != null) {
                 // precise matches
@@ -151,15 +152,41 @@ namespace niacop {
                     Global.log.info(closest.prettyFormat());
                 }
             }
-            
+
             // summarize that time period (1 hour)
-            var periodStart = queryDateOffset.AddHours(-0.5).ToUnixTimeMilliseconds();
-            var periodEnd = queryDateOffset.AddHours(0.5).ToUnixTimeMilliseconds();
-            var aroundSessions = sessionTable.Where(x => 
+            var periodHours = 1f;
+            var periodStart = queryDateOffset.AddHours(-periodHours / 2).ToUnixTimeMilliseconds();
+            var periodEnd = queryDateOffset.AddHours(periodHours / 2).ToUnixTimeMilliseconds();
+            var aroundSessions = sessionTable.Where(x =>
                     x.startTime >= periodStart && x.endTime <= periodEnd)
                 .ToList();
-            // get the top-N apps
+            // create usages
+            var usages = new Dictionary<string, AppUsage>();
+            foreach (var sess in aroundSessions) {
+                if (!usages.ContainsKey(sess.application)) {
+                    usages[sess.application] = new AppUsage {
+                        application = sess.application
+                    };
+                }
+
+                // update entry
+                usages[sess.application].time += sess.endTime - sess.startTime;
+                usages[sess.application].keyEvents += sess.keyEvents;
+            }
+
+            // get the top-N usages
             var topN = 8;
+            var topUsages = usages.Values.OrderByDescending(x => x.time)
+                .Take(topN);
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"usage summary (top {topN} within {periodHours}h)");
+            foreach (var usage in topUsages) {
+                var humanTime = TimeSpan.FromMilliseconds(usage.time);
+                sb.AppendLine($"{usage.application}: {humanTime} // {usage.keyEvents}ks");
+            }
+
+            Global.log.info(sb.ToString());
 
             return 0;
         }
