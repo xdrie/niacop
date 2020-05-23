@@ -81,6 +81,7 @@ namespace niacop.Services {
                         foreach (var eventLogger in eventLoggers) {
                             eventLogger.update(sc);
                         }
+
                         // update entry
                         current.endTime = Utils.timestamp();
                         database!.Update(current);
@@ -113,20 +114,29 @@ namespace niacop.Services {
                     procPath = proc.MainModule?.FileName;
                 }
 
-                lock (current!) {
-                    current = new Session {
-                        application = window.application,
-                        windowTitle = window.title,
-                        processId = window.processId,
-                        processName = procName,
-                        processPath = procPath,
-                        startTime = timestampNow,
-                        endTime = timestampNow,
-                    };
-                    database!.Insert(current!); // initially create session
+                // assign new session 
+                var newSession = new Session {
+                    application = window.application,
+                    windowTitle = window.title,
+                    processId = window.processId,
+                    processName = procName,
+                    processPath = procPath,
+                    startTime = timestampNow,
+                    endTime = timestampNow,
+                };
+                if (current == null) {
+                    current = newSession;
+                }
+                else {
+                    lock (current) {
+                        current = newSession;
+                    }
                 }
 
-                Global.log.trace($"started session ({current!.application}/{current!.processName})");
+                lock (current!) {
+                    database!.Insert(current!);
+                    Global.log.trace($"started session ({current!.application}/{current!.processName})");
+                }
             }
             catch (ArgumentException) {
                 Global.log.warn($"process {window.processId} did not exist ({window.application})");
