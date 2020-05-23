@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading;
-using niacop.Services;
+using Iri.Glass.Logging;
 
 namespace niacop.Native.WindowManagers {
     public class XWindowManager : IWindowManager {
@@ -22,7 +21,7 @@ namespace niacop.Native.WindowManagers {
             if (xdotool.exitCode != 0) throw new FileNotFoundException("xdotool was not found");
             var xinput = Shell.executeEval("xinput list");
             if (xinput.exitCode != 0) throw new FileNotFoundException("xinput was not found");
-            
+
             // store keyboard mappings
             var xmodmapRaw = Shell.executeEval("xmodmap -pke");
             foreach (var line in xmodmapRaw.stdout.Split('\n')) {
@@ -50,8 +49,9 @@ namespace niacop.Native.WindowManagers {
                     processId = int.Parse(wPid.stdout.Trim()),
                     title = wTitle.stdout.Trim()
                 };
-            } catch (FormatException e) {
-                Logger.log($"format exception: {wPid.stdout} - {e}", Logger.Level.Error);
+            }
+            catch (FormatException e) {
+                Global.log.writeLine($"format exception: {wPid.stdout} - {e}", Logger.Verbosity.Error);
                 return null;
             }
         }
@@ -81,7 +81,7 @@ namespace niacop.Native.WindowManagers {
         public void deinitialize() {
             if (keyHookProc != null && !keyHookProc.HasExited) {
                 keyHookProc.Kill();
-                keyHookProc.WaitForExit();   
+                keyHookProc.WaitForExit();
             }
         }
     }

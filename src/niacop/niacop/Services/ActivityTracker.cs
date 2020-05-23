@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using niacop.Configuration;
+using Iri.Glass.Logging;
 using niacop.Extensibility.Tracker;
 using niacop.Native;
 using niacop.Native.WindowManagers;
@@ -55,22 +55,22 @@ namespace niacop.Services {
         }
 
         public void run(CancellationToken token) {
-            if (Options.keylogger) {
+            if (Global.config.tracker.keylogger) {
                 runKeylogger();
             }
 
             while (!token.IsCancellationRequested) {
                 pollSession();
                 // wait 5 seconds between session polls
-                Thread.Sleep(Options.windowPoll);
+                Thread.Sleep(Global.config.tracker.windowPoll);
             }
         }
 
         private void pollSession() {
             var idleTime = _plat.wm.getIdleTime();
-            if (idleTime > Options.idleThreshold) {
+            if (idleTime > Global.config.tracker.idle) {
                 if (current != null) {
-                    Logger.log($"session entered idle state ({idleTime})", Logger.Level.Trace);
+                    Global.log.writeLine($"session entered idle state ({idleTime})", Logger.Verbosity.Trace);
                     endSession();
                 }
 
@@ -108,8 +108,8 @@ namespace niacop.Services {
         private void endSession() {
             lock (current) {
                 current.duration = Platform.timestamp() - current.startTime;
-                Logger.log($"    ended session ({current.duration}ms/{current.keyEvents}ks)",
-                    Logger.Level.Trace);
+                Global.log.writeLine($"    ended session ({current.duration}ms/{current.keyEvents}ks)",
+                    Logger.Verbosity.Trace);
                 sessions.Add(current);
                 database.Update(current); // save to database
                 current = null; // unset current
@@ -130,10 +130,10 @@ namespace niacop.Services {
                     startTime = Platform.timestamp()
                 };
                 database.Insert(current); // initially create session
-                Logger.log($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
-                    Logger.Level.Trace);
+                Global.log.writeLine($"started new[{sessions.Count}] session ({current.processName}/{current.application})",
+                    Logger.Verbosity.Trace);
             } catch (ArgumentException) {
-                Logger.log($"process {window.processId} did not exist ({window.application})", Logger.Level.Warning);
+                Global.log.writeLine($"process {window.processId} did not exist ({window.application})", Logger.Verbosity.Warning);
             }
         }
 

@@ -63,9 +63,9 @@ namespace niacop.Services {
                         var entries = database.Table<BookEntry>();
                         var entryCount = entries.Count();
                         Console.WriteLine(
-                            $"showing [{Math.Min(Options.browseEntries, entryCount)}/{entryCount}] entries:");
+                            $"showing [{Math.Min(Global.config.book.browseEntries, entryCount)}/{entryCount}] entries:");
                         var recentEntries = entries.OrderByDescending(x => x.timestamp)
-                            .Take(Options.browseEntries);
+                            .Take(Global.config.book.browseEntries);
                         foreach (var entry in recentEntries) {
                             var localTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(entry.timestamp).ToLocalTime();
                             Console.WriteLine($"== {localTimestamp:yyyy/MM/dd HH:mm:ss.f} ==");

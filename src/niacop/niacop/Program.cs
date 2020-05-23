@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
+using Iri.Glass.Logging;
 using niacop.Configuration;
 using niacop.Extensibility;
 using niacop.Native;
@@ -25,11 +26,11 @@ namespace niacop {
             // parse options
             var configFilePath = Path.Combine(DataPaths.configBase, CONFIG_FILE_NAME);
             if (File.Exists(configFilePath)) {
-                Logger.log($"loading configuration from {configFilePath}", Logger.Level.Trace);
+                Global.log.writeLine($"loading configuration from {configFilePath}", Logger.Verbosity.Trace);
                 var configFileContent = File.ReadAllText(configFilePath);
-                var optionParser = new OptionParser();
-                optionParser.parse(configFileContent);
-                Options.load(optionParser);
+                var config = new Config();
+                config.load(configFileContent);
+                Global.config = config;
             }
             else {
                 Console.WriteLine($"ERR: config file does not exist at {configFilePath}");
@@ -37,11 +38,11 @@ namespace niacop {
             }
 
             // load plugins
-            Logger.log($"loading plugins", Logger.Level.Trace);
+            Global.log.writeLine($"loading plugins", Logger.Verbosity.Trace);
             var plugins = new List<INiaPlugin>();
             var defaultPlugins = Services.Extensibility.loader.LoadFrom(Assembly.GetExecutingAssembly());
             plugins.AddRange(defaultPlugins);
-            foreach (var pluginContainer in Options.plugins) {
+            foreach (var pluginContainer in Global.config.ext.paths) {
                 var asm = Assembly.Load(pluginContainer);
                 var asmPlugins = Services.Extensibility.loader.LoadFrom(asm);
                 plugins.AddRange(asmPlugins);
@@ -81,7 +82,7 @@ namespace niacop {
             // prepare exit handler
             var unloadHandler = new Action(() => {
                 if (!cts.IsCancellationRequested) {
-                    Logger.log("recieved exit signal, cleaning up", Logger.Level.Warning);
+                    Global.log.writeLine("recieved exit signal, cleaning up", Logger.Verbosity.Warning);
                     cts.Cancel();
                     activityDaemon.destroy();
                 }
