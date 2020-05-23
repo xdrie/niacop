@@ -7,7 +7,7 @@ namespace niacop.Extensibility.Tracker {
     }
 
     public abstract class SessionEventLogger : ISessionEventLogger {
-        protected SQLiteConnection database;
+        protected SQLiteConnection? database;
 
         public virtual void initialize(SQLiteConnection database) {
             this.database = database;

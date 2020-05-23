@@ -15,23 +15,23 @@ namespace niacop.Services {
         private Platform _plat;
         private string trackerDataPath;
         private string trackerDatabaseFile;
-        public SQLiteConnection database;
+        public SQLiteConnection? database;
         private IEnumerable<ISessionEventLogger> eventLoggers;
 
         // public List<Session> sessions = new List<Session>();
-        public Session current;
+        public Session? current;
 
         public ActivityTracker() {
             _plat = new Platform();
+            trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
+            trackerDatabaseFile = Path.Combine(trackerDataPath, "activity.db");
+            eventLoggers = Extensibility.jar.ResolveAll<ISessionEventLogger>();
         }
 
         public void initialize() {
-            trackerDataPath = Path.Combine(DataPaths.profilePath, "tracker");
-            trackerDatabaseFile = Path.Combine(trackerDataPath, "activity.db");
             Directory.CreateDirectory(Path.GetDirectoryName(trackerDatabaseFile));
             database = new SQLiteConnection(trackerDatabaseFile);
             database.CreateTable<Session>();
-            eventLoggers = Extensibility.jar.ResolveAll<ISessionEventLogger>();
             foreach (var eventLogger in eventLoggers) {
                 eventLogger.initialize(database);
             }

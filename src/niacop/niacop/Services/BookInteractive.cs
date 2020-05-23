@@ -9,25 +9,25 @@ namespace niacop.Services {
         private Platform _plat;
         public string bookDataPath;
         public string bookDatabaseFile;
-        public SQLiteConnection database;
+        public SQLiteConnection? database;
 
         public class BookEntry {
             [PrimaryKey, AutoIncrement] public int id { get; set; }
 
             [Indexed] public long timestamp { get; set; }
 
-            public string words { get; set; }
+            public string? words { get; set; }
 
             public override string ToString() => timestamp.ToString();
         }
 
         public BookInteractive() {
             _plat = new Platform();
+            bookDataPath = Path.Combine(DataPaths.profilePath, "book");
+            bookDatabaseFile = Path.Combine(bookDataPath, "data.db");
         }
 
         public void initialize() {
-            bookDataPath = Path.Combine(DataPaths.profilePath, "book");
-            bookDatabaseFile = Path.Combine(bookDataPath, "data.db");
             Directory.CreateDirectory(Path.GetDirectoryName(bookDatabaseFile));
             database = new SQLiteConnection(bookDatabaseFile);
             database.CreateTable<BookEntry>();
