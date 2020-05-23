@@ -14,12 +14,12 @@ namespace niacop {
         public const string CONFIG_FILE_NAME = "niacop.conf";
         public const string VERSION = "0.3.4";
 
-        static void Main(string[] args) {
+        static int Main(string[] args) {
             Console.WriteLine($"[niacop] v{VERSION}");
 
             if (args.Length < 1) {
                 Console.WriteLine("no subcommand specified.");
-                return;
+                return 1;
             }
 
             // parse options
@@ -30,6 +30,10 @@ namespace niacop {
                 var optionParser = new OptionParser();
                 optionParser.parse(configFileContent);
                 Options.load(optionParser);
+            }
+            else {
+                Console.WriteLine($"ERR: config file does not exist at {configFilePath}");
+                return 2;
             }
 
             // load plugins
@@ -58,6 +62,8 @@ namespace niacop {
                     subcommandBook();
                     break;
             }
+
+            return 0;
         }
 
         private static void subcommandBook() {
