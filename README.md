@@ -1,30 +1,44 @@
 
 # niacop
-
 a cross platform self-tracker tool
+
+niacop runs in the background as a daemon and gradually gathers data on your computer usage.
+all data collection is done locally and data never leaves the host computer.
+the usage data is compiled into a local database, which can later be queried
+in such a way as to allow you to figure out what applications you were using
+at any time in the past.
+
+niacop can also optionally count key events as a metric of engagement with an
+application.
 
 niacop has been tested on windows and linux.
 
-## config and paths
-
-+ configuration file is located at `~/.config/niacop/niacop.conf`
-+ data is divided into profiles, stored at `~/.local/share/niacomp/<profile>/`
-
 ## dependencies
 
-on linux, niacop requires:
+### linux
 + `xprintidle`
 + `xprop`
 + `xdotool`
 + `xinput`
 + `xmodmap`
 
+some of these can be found in source form in `external/`.
+
+### windows
+
+the niacop windows backend is built on the Win32 API, so no external dependencies are needed.
+
 ## build
+
+install [.NET SDK](https://dotnet.microsoft.com/download/dotnet/current), then:
 
 ```
 cd src/niacop
 dotnet build -c Release
 ```
+
+this will create `./Nia`, which you should symlink to somewhere in your path as `niacop`.
+then, you can use `niacop` to invoke the program.
 
 ## modes
 
@@ -46,14 +60,19 @@ dotnet build -c Release
 
 see [book](doc/book.md)
 
-## platform support
+## config/paths
 
-the window tracking features requires native support on some platforms. see the `external/` directory for sources.
++ configuration file is located at `~/.config/niacop/niacop.conf` (linux) or in `AppData` (windows)
++ data is divided into profiles, stored at `~/.local/share/niacomp/<profile>/` (linux)
 
 ## useful commands
+
+run niacop with a log file
 ```
-# run niacop
 niacop activity | tee ~/.log/niacop/niacop.log
-# export niacop data
-sqlite3 -header -csv ~/.local/share/niacop/profile_debugging/tracker/activity.db "select * from session;" > ~/.local/share/niacop/profile_debugging/analysis/activity.csv
+```
+
+export niacop data to CSV
+```
+sqlite3 -header -csv ~/.local/share/niacop/profile_xxxx/tracker/activity.db "select * from session;" > ~/.local/share/niacop/profile_xxxx/analysis/activity.csv
 ```
