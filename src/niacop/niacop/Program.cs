@@ -157,9 +157,11 @@ namespace niacop {
             var periodHours = 1f;
             var periodStart = queryDateOffset.AddHours(-periodHours / 2).ToUnixTimeMilliseconds();
             var periodEnd = queryDateOffset.AddHours(periodHours / 2).ToUnixTimeMilliseconds();
+
             var aroundSessions = sessionTable.Where(x =>
                     x.startTime >= periodStart && x.endTime <= periodEnd)
                 .ToList();
+            
             // create usages
             var usages = new Dictionary<string, AppUsage>();
             foreach (var sess in aroundSessions) {
@@ -183,7 +185,7 @@ namespace niacop {
             sb.AppendLine($"usage summary (top {topN} within {periodHours}h)");
             foreach (var usage in topUsages) {
                 var humanTime = TimeSpan.FromMilliseconds(usage.time);
-                sb.AppendLine($"{usage.application}: {humanTime} // {usage.keyEvents}ks");
+                sb.AppendLine($"{usage.application, 24}: {humanTime} // {usage.keyEvents, 5}ks");
             }
 
             Global.log.info(sb.ToString());
