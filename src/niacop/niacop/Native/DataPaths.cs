@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using niacop.Configuration;
 
 namespace niacop.Native {
     public static class DataPaths {

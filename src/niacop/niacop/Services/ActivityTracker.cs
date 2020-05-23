@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading;
 using Iri.Glass.Logging;
 using niacop.Extensibility.Tracker;
+using niacop.Models;
 using niacop.Native;
 using niacop.Native.WindowManagers;
 using SQLite;
@@ -17,36 +17,6 @@ namespace niacop.Services {
         private string trackerDatabaseFile;
         public SQLiteConnection database;
         private IEnumerable<ISessionEventLogger> eventLoggers;
-
-        public class Session {
-            [PrimaryKey, AutoIncrement] public int id { get; set; }
-
-            [Indexed] public string application { get; set; }
-
-            public string windowTitle { get; set; }
-            public int processId { get; set; }
-            public string processName { get; set; }
-            public string processPath { get; set; }
-            [Indexed] public long startTime { get; set; }
-            [Indexed] public long endTime { get; set; }
-            public long keyEvents { get; set; }
-            public long getDuration() => endTime - startTime;
-
-            public override string ToString() => $"application({getDuration()})";
-
-            public string prettyFormat() {
-                var sb = new StringBuilder();
-                sb.AppendLine($"id: {id}");
-                sb.AppendLine($"application: {application}");
-                sb.AppendLine($"title: {windowTitle}");
-                sb.AppendLine($"processId: {processId}");
-                sb.AppendLine($"processPath: {processPath}");
-                sb.AppendLine($"startTime: {Utils.parseTimestamp(startTime).LocalDateTime}");
-                sb.AppendLine($"endTime: {Utils.parseTimestamp(endTime).LocalDateTime}");
-                sb.AppendLine($"keyEvents: {keyEvents}");
-                return sb.ToString();
-            }
-        }
 
         // public List<Session> sessions = new List<Session>();
         public Session current;

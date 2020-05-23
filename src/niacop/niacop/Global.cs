@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Iri.Glass.Logging;
-using niacop.Configuration;
 
 namespace niacop {
     public static class Global {

@@ -4,7 +4,7 @@ using Iri.Glass.Config;
 using Iri.Glass.Logging;
 using Tomlyn.Model;
 
-namespace niacop.Configuration {
+namespace niacop {
     public class Config : TomlConfig {
         public class Profile {
             public string name = "default";

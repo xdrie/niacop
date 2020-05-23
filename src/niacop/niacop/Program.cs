@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
-using niacop.Configuration;
 using niacop.Extensibility;
+using niacop.Models;
 using niacop.Native;
 using niacop.Services;
 using HumanDateParser = Chronic.Core.Parser;
@@ -98,7 +98,7 @@ namespace niacop {
             var tracker = createTracker();
 
             // find candidates
-            var sessionTable = tracker.database.Table<ActivityTracker.Session>();
+            var sessionTable = tracker.database.Table<Session>();
 
             // we want any sessions that BOTH
             // - start before
@@ -129,7 +129,7 @@ namespace niacop {
                 var immAfter = afterSessions.FirstOrDefault();
 
                 // compare their distance, and take the closest one
-                var closest = default(ActivityTracker.Session);
+                var closest = default(Session);
                 var closestDist = 0L;
                 if (immBefore == null && immAfter == null) {
                     Global.log.info($"no sessions found within 12 hours of requested time.");

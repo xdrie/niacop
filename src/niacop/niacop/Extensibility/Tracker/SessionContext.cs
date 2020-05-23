@@ -1,9 +1,10 @@
-﻿using niacop.Native.WindowManagers;
+﻿using niacop.Models;
+using niacop.Native.WindowManagers;
 using niacop.Services;
 
 namespace niacop.Extensibility.Tracker {
     public class SessionContext {
-        public ActivityTracker.Session session;
+        public Session session;
         public Window window;
     }
 }
