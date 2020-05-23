@@ -51,6 +51,9 @@ namespace niacop {
             var trackerTb = tb.getTable(nameof(tracker));
             trackerTb.autoBind(tracker);
             
+            var timeMachineTb = tb.getTable(nameof(timeMachine));
+            timeMachineTb.autoBind(timeMachine);
+            
             var bookTb = tb.getTable(nameof(book));
             bookTb.autoBind(book);
             
