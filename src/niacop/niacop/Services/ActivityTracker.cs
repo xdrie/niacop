@@ -104,6 +104,7 @@ namespace niacop.Services {
             if (window == null) return;
             // detect process path
             try {
+                var timestampNow = Utils.timestamp();
                 var proc = Process.GetProcessById(window.processId);
                 current = new Session {
                     application = window.application,
@@ -111,7 +112,8 @@ namespace niacop.Services {
                     processId = window.processId,
                     processName = proc.ProcessName,
                     processPath = proc.MainModule?.FileName,
-                    startTime = Utils.timestamp()
+                    startTime = timestampNow,
+                    endTime = timestampNow,
                 };
                 database.Insert(current); // initially create session
                 Global.log.trace($"started session ({current.processName}/{current.application})");
