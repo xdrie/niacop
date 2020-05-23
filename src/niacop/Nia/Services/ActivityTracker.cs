@@ -37,14 +37,14 @@ namespace Nia.Services {
         }
 
         public void run(CancellationToken token) {
-            if (Global.config!.tracker.keylogger) {
-                runKeylogger();
+            if (Global.config!.tracker.keycounter) {
+                runKeyCounter();
             }
 
             while (!token.IsCancellationRequested) {
                 pollSession();
-                // wait 5 seconds between session polls
-                Thread.Sleep(Global.config!.tracker.windowPoll);
+                // wait between session polls
+                Thread.Sleep(Global.config!.tracker.poll);
             }
         }
 
@@ -142,16 +142,14 @@ namespace Nia.Services {
             }
         }
 
-        private void runKeylogger() {
-            platform.wm.hookUserEvents(globalKeyEvent);
+        private void runKeyCounter() {
+            platform.wm.hookUserEvents(onKeyEvent);
         }
 
-        private void globalKeyEvent(KeyboardEvent kev) {
+        private void onKeyEvent(KeyboardEvent kev) {
             if (current != null) {
                 lock (current) {
-                    if (current != null) {
-                        current.keyEvents += 1;
-                    }
+                    current.keyEvents += 1;
                 }
             }
         }

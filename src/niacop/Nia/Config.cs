@@ -7,7 +7,7 @@ using Tomlyn.Model;
 namespace Nia {
     public class Config : TomlConfig {
         public const string CONFIG_FILE = "niacop.conf";
-        
+
         public class Profile {
             public string name = "default";
         }
@@ -15,9 +15,20 @@ namespace Nia {
         public Profile profile = new Profile();
 
         public class Tracker {
+            /// <summary>
+            /// tracker idle time in ms
+            /// </summary>
             public int idle = (int) TimeSpan.FromMinutes(5).TotalMilliseconds;
-            public int windowPoll = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
-            public bool keylogger = false;
+
+            /// <summary>
+            /// tracker polling interval in ms
+            /// </summary>
+            public int poll = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
+
+            /// <summary>
+            /// whether to count keystrokes
+            /// </summary>
+            public bool keycounter = false;
         }
 
         public Tracker tracker = new Tracker();
@@ -46,16 +57,16 @@ namespace Nia {
 
             var trackerTb = tb.getTable(nameof(tracker));
             trackerTb.autoBind(tracker);
-            
+
             var bookTb = tb.getTable(nameof(book));
             bookTb.autoBind(book);
-            
+
             var extTb = tb.getTable(nameof(ext));
             extTb.autoBind(ext);
-            
+
             var logTb = tb.getTable(nameof(log));
             logTb.autoBind(log);
-            
+
             // apply config
             Global.log.verbosity = log.verbosity;
         }
