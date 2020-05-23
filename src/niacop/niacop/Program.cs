@@ -154,7 +154,7 @@ namespace niacop {
 
                     // show closest session
                     var distTimespan = TimeSpan.FromMilliseconds(closestDist);
-                    Global.log.info($"found closest session ({distTimespan}) away.");
+                    Global.log.info($"found closest session {distTimespan:hh\\:mm\\:ss} away.");
                     Global.log.info(closest!.prettyFormat());
                 }
             }
