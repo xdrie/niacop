@@ -70,7 +70,7 @@ for reference, see the [config model](src/niacop/Nia/Config.cs).
 ### time machine
 
 + time query for finding what applications were in use at a given time
-+ run with ex. `niacop timemachine "7:15 PM on May 22"`
++ run with ex. `niacop timemachine "may 22 at 7 PM"`
 
 ### book
 
