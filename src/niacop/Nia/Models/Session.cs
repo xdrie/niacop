@@ -25,8 +25,8 @@ namespace Nia.Models {
             sb.AppendLine($"title:          {windowTitle}");
             sb.AppendLine($"processId:      {processId}");
             sb.AppendLine($"processPath:    {processPath}");
-            sb.AppendLine($"startTime:      {Utils.parseTimestamp(startTime).LocalDateTime}");
-            sb.AppendLine($"endTime:        {Utils.parseTimestamp(endTime).LocalDateTime}");
+            sb.AppendLine($"startTime:      {Utils.timestampToLocal(startTime)}");
+            sb.AppendLine($"endTime:        {Utils.timestampToLocal(endTime)}");
             sb.AppendLine($"keyEvents:      {keyEvents}");
             return sb.ToString();
         }

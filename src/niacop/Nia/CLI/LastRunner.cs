@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using CommandLine;
+using Humanizer;
 using Nia.Models;
 using Nia.Services;
 
@@ -31,7 +33,8 @@ namespace Nia.CLI {
                 Global.log.info($"found {matchedSessions.Count()} matching entries.");
                 var lastSess = matchedSessions.Last();
                 // print the session nicely
-                Global.log.info($"most recent session:\n{lastSess.prettyFormat()}");
+                var distTimespan = DateTime.Now - Utils.timestampToLocal(lastSess.endTime);
+                Global.log.info($"most recent session ({distTimespan.Humanize(2)} ago):\n{lastSess.prettyFormat()}");
             }
             else {
                 Global.log.err("no matching sessions.");

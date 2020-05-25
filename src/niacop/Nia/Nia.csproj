@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Chronic.Core" Version="0.3.2" />
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="Humanizer" Version="2.8.11" />
     <PackageReference Include="Iri.Glass" Version="0.2.1" />
     <PackageReference Include="Iri.Plugin" Version="1.1.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />

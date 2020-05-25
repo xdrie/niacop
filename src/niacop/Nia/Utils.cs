@@ -7,6 +7,8 @@ namespace Nia {
         public static DateTimeOffset parseTimestamp(long timestamp) =>
             DateTimeOffset.FromUnixTimeMilliseconds(timestamp);
 
+        public static DateTime timestampToLocal(long timestamp) => parseTimestamp(timestamp).LocalDateTime;
+
         public struct SINumber : IFormattable {
             public char? prefix;
             public double value;
