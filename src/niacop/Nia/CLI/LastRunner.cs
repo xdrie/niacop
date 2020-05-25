@@ -22,6 +22,10 @@ namespace Nia.CLI {
 
             var normQuery = options.application!.ToLower();
             var matchedSessions = sessionTable.Where(x => x.application!.ToLower().Contains(normQuery));
+            if (!matchedSessions.Any()) {
+                Global.log.warn("no matches found by application, searching by title");
+                matchedSessions = sessionTable.Where(x => x.windowTitle!.ToLower().Contains(normQuery));
+            }
 
             if (matchedSessions.Any()) {
                 Global.log.info($"found {matchedSessions.Count()} matching entries.");
