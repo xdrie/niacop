@@ -11,6 +11,9 @@ namespace Nia.CLI {
         public class Options {
             [Value(0, Required = true, MetaName = "app", HelpText = "The application for which to query sessions.")]
             public string? application { get; set; }
+
+            [Option('z', "fuzz", Required = false, Default = false, HelpText = "Whether to fuzzy search sessions.")]
+            public bool fuzz { get; set; }
         }
 
         public override int run(Options options) {
@@ -27,6 +30,11 @@ namespace Nia.CLI {
             if (!matchedSessions.Any()) {
                 Global.log.warn("no matches found by application, searching by title");
                 matchedSessions = sessionTable.Where(x => x.windowTitle!.ToLower().Contains(normQuery));
+            }
+
+            if (options.fuzz && !matchedSessions.Any()) {
+                Global.log.warn("no matches found by application, fuzzy searching all");
+                throw new NotImplementedException();
             }
 
             if (matchedSessions.Any()) {
