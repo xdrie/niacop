@@ -12,7 +12,7 @@ namespace Nia {
     class Program {
         public static int Main(string[] args) {
             // parse config file
-            var configFilePath = Path.Combine(DataPaths.configBase, Config.CONFIG_FILE);
+            var configFilePath = Path.Combine(DataPaths.configPath, Config.CONFIG_FILE);
             if (File.Exists(configFilePath)) {
                 Global.log.trace($"loading configuration from {configFilePath}");
                 var configFileContent = File.ReadAllText(configFilePath);
