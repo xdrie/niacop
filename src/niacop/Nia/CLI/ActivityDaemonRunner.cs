@@ -12,7 +12,7 @@ namespace Nia.CLI {
         }
 
         public override int run(Options options) {
-            Global.log.info("running activity tracker");
+            Global.log.info($"running activity tracker (started at {DateTime.Now})");
             var cts = new CancellationTokenSource();
             var tracker = new ActivityTracker();
             tracker.initialize();
