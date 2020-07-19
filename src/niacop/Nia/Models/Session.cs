@@ -4,10 +4,8 @@ using SQLite;
 namespace Nia.Models {
     public class Session {
         [PrimaryKey, AutoIncrement] public int id { get; set; }
-
         [Indexed] public string? application { get; set; }
-
-        public string? windowTitle { get; set; }
+        [Indexed] public string? windowTitle { get; set; }
         public int processId { get; set; }
         public string? processName { get; set; }
         public string? processPath { get; set; }
