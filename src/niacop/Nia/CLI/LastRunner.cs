@@ -14,6 +14,9 @@ namespace Nia.CLI {
 
             [Option('z', "fuzz", Required = false, Default = false, HelpText = "Whether to fuzzy search sessions.")]
             public bool fuzz { get; set; }
+
+            [Option('n', "entries", Required = false, HelpText = "The number of recent entries to find.")]
+            public int lastN { get; set; } = 1;
         }
 
         public override int run(Options options) {
@@ -38,16 +41,18 @@ namespace Nia.CLI {
             }
 
             if (matchedSessions.Any()) {
-                Global.log.info($"found {matchedSessions.Count()} matching entries.");
-                var lastSess = matchedSessions.Last();
-                // print the session nicely
-                var distTimespan = DateTime.Now - Utils.timestampToLocal(lastSess.endTime);
-                Global.log.info($"most recent session ({distTimespan.Humanize(2)} ago):\n{lastSess.prettyFormat()}");
+                Global.log.info($"found {matchedSessions.Count()} matching entries (displaying {options.lastN}).");
+                var listedSessions = matchedSessions.OrderByDescending(x => x.endTime);
+                foreach (var sess in listedSessions.Take(options.lastN)) {
+                    // print the session nicely
+                    var distTimespan = DateTime.Now - Utils.timestampToLocal(sess.endTime);
+                    Global.log.info($"session ({distTimespan.Humanize(2)} ago):\n{sess.prettyFormat()}");
+                }
             }
             else {
                 Global.log.err("no matching sessions.");
             }
-            
+
             return 0;
         }
     }
