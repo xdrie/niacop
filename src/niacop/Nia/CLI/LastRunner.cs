@@ -17,6 +17,9 @@ namespace Nia.CLI {
 
             [Option('n', "entries", Required = false, HelpText = "The number of recent entries to find.")]
             public int lastN { get; set; } = 1;
+
+            [Option('s', "skip", Required = false, HelpText = "The number of entries to skip.")]
+            public int skipN { get; set; } = 0;
         }
 
         public override int run(Options options) {
@@ -41,9 +44,11 @@ namespace Nia.CLI {
             }
 
             if (matchedSessions.Any()) {
-                Global.log.info($"found {matchedSessions.Count()} matching entries (displaying {options.lastN}).");
+                Global.log.info(
+                    $"found {matchedSessions.Count()} matching entries (displaying {options.lastN} starting at pos {options.skipN}).");
+                // get a range of the sessions with most recent first
                 var listedSessions = matchedSessions.OrderByDescending(x => x.endTime);
-                foreach (var sess in listedSessions.Take(options.lastN)) {
+                foreach (var sess in listedSessions.Skip(0).Take(options.lastN)) {
                     // print the session nicely
                     var distTimespan = DateTime.Now - Utils.timestampToLocal(sess.endTime);
                     Global.log.info($"session ({distTimespan.Humanize(2)} ago):\n{sess.prettyFormat()}");
