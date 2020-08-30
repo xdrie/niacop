@@ -16,4 +16,30 @@
     <PackageReference Include="Iri.Plugin" Version="1.1.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
   </ItemGroup>
+  <!-- Native Compilation Modes -->
+
+  <ItemGroup Condition="'$(CoreRTMode)' != ''">
+    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*"/>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(CoreRTMode)' != ''">
+    <DefineConstants>$(DefineConstants);CORERT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CoreRTMode)' == 'Moderate' or '$(CoreRTMode)' == 'High'">
+    <IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
+    <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CoreRTMode)' == 'High'">
+    <RootAllApplicationAssemblies>false</RootAllApplicationAssemblies>
+    <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+    <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
+    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(CoreRTMode)' == 'High'">
+    <IlcArg Include="--removefeature:EventSource" />
+    <IlcArg Include="--removefeature:FrameworkStrings" />
+  </ItemGroup>
 </Project>
