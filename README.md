@@ -41,6 +41,11 @@ dotnet build -c Release
 this will create `./Nia`, which you should symlink to somewhere in your path as `niacop`.
 then, you can use `niacop` to invoke the program.
 
+alternatively, you can also make a CoreRT build, though this is experimental:
+```
+dotnet publish -c Release -f netcoreapp3.1 -r linux-x64 /p:UseCoreRT=1
+```
+
 ## config/paths
 
 + configuration file is located at `~/.config/niacop/niacop.conf` (linux) or in `AppData` (windows)
