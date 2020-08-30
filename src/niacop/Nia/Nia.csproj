@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.5.8</Version>
+    <Version>0.5.9</Version>
     <Copyright>ALTiCU</Copyright>
     <Company>ALTiCU</Company>
   </PropertyGroup>
