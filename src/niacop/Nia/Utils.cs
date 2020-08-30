@@ -36,7 +36,7 @@ namespace Nia {
 
             char? prefix = null;
             if (Math.Abs(scaled) >= double.Epsilon) {
-                 prefix = Math.Sign(degree) switch {
+                prefix = Math.Sign(degree) switch {
                     1 => incPrefixes[degree - 1],
                     -1 => decPrefixes[-degree - 1],
                     _ => null
@@ -44,6 +44,44 @@ namespace Nia {
             }
 
             return new SINumber(prefix, scaled);
+        }
+
+        /// <summary>
+        /// adapted from https://dotnetthoughts.net/time-ago-function-for-c/
+        /// </summary>
+        /// <param name="timeSpan"></param>
+        /// <returns></returns>
+        public static string timeAgo(TimeSpan timeSpan) {
+            string result = string.Empty;
+
+            if (timeSpan <= TimeSpan.FromSeconds(60)) {
+                result = $"{timeSpan.Seconds} seconds ago";
+            }
+            else if (timeSpan <= TimeSpan.FromMinutes(60)) {
+                result = timeSpan.Minutes > 1
+                    ? $"about {timeSpan.Minutes} minutes ago"
+                    : "about a minute ago";
+            }
+            else if (timeSpan <= TimeSpan.FromHours(24)) {
+                result = timeSpan.Hours > 1
+                    ? $"about {timeSpan.Hours} hours ago"
+                    : "about an hour ago";
+            }
+            else if (timeSpan <= TimeSpan.FromDays(30)) {
+                result = timeSpan.Days > 1 ? $"about {timeSpan.Days} days ago" : "yesterday";
+            }
+            else if (timeSpan <= TimeSpan.FromDays(365)) {
+                result = timeSpan.Days > 30
+                    ? $"about {timeSpan.Days / 30} months ago"
+                    : "about a month ago";
+            }
+            else {
+                result = timeSpan.Days > 365
+                    ? $"about {timeSpan.Days / 365} years ago"
+                    : "about a year ago";
+            }
+
+            return result;
         }
     }
 }

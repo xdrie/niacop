@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using CommandLine;
-using Humanizer;
 using Nia.Models;
 using Nia.Services;
 
@@ -51,7 +50,7 @@ namespace Nia.CLI {
                 foreach (var sess in listedSessions.Skip(0).Take(options.lastN)) {
                     // print the session nicely
                     var distTimespan = DateTime.Now - Utils.timestampToLocal(sess.endTime);
-                    Global.log.info($"session ({distTimespan.Humanize(2)} ago):\n{sess.prettyFormat()}");
+                    Global.log.info($"session ({Utils.timeAgo(distTimespan)}):\n{sess.prettyFormat()}");
                 }
             }
             else {
