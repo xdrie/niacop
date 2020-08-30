@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
+using FuzzySharp;
 using Nia.Models;
 using Nia.Services;
 
@@ -9,7 +11,7 @@ namespace Nia.CLI {
         [Verb("last", HelpText = "Query last interaction with an application.")]
         public class Options {
             [Value(0, Required = true, MetaName = "app", HelpText = "The application for which to query sessions.")]
-            public string? application { get; set; }
+            public string? query { get; set; }
 
             [Option('z', "fuzz", Required = false, Default = false, HelpText = "Whether to fuzzy search sessions.")]
             public bool fuzz { get; set; }
@@ -22,7 +24,7 @@ namespace Nia.CLI {
         }
 
         public override int run(Options options) {
-            Global.log.info($"query LAST SESSION for: {options.application}");
+            Global.log.info($"query LAST SESSION for: {options.query}");
 
             var tracker = new ActivityTracker();
             tracker.initialize();
@@ -30,16 +32,31 @@ namespace Nia.CLI {
             // find candidates
             var sessionTable = tracker.database!.Table<Session>();
 
-            var normQuery = options.application!.ToLower();
-            var matchedSessions = sessionTable.Where(x => x.application!.ToLower().Contains(normQuery));
+            var query = options.query!.ToLower();
+            IEnumerable<Session> matchedSessions = sessionTable.Where(x => x.application!.ToLower().Contains(query));
             if (!matchedSessions.Any()) {
                 Global.log.warn("no matches found by application, searching by title");
-                matchedSessions = sessionTable.Where(x => x.windowTitle!.ToLower().Contains(normQuery));
+                matchedSessions = sessionTable.Where(x => x.windowTitle!.ToLower().Contains(query));
             }
 
             if (options.fuzz && !matchedSessions.Any()) {
                 Global.log.warn("no matches found by application, fuzzy searching all");
-                throw new NotImplementedException();
+                // get fuzzy match scores for all sessions
+                var threshold = 50;
+                var matches = new List<(Session, int)>();
+                foreach (var session in sessionTable) {
+                    var appRatio = Fuzz.WeightedRatio(query, session.application);
+                    var titleRatio = Fuzz.WeightedRatio(query, session.windowTitle);
+                    var sessRatio = Math.Max(appRatio, titleRatio);
+                    if (sessRatio > threshold) {
+                        matches.Add((session, sessRatio));
+                    }
+                }
+
+                // sort to get best matches
+                var sortedMatches = matches.OrderByDescending(x => x.Item2);
+                Global.log.warn($"best fuzzy match: {sortedMatches.First().Item2}%");
+                matchedSessions = sortedMatches.Select(x => x.Item1).ToList();
             }
 
             if (matchedSessions.Any()) {
