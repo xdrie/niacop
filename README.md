@@ -38,7 +38,7 @@ cd src/niacop
 dotnet build -c Release
 ```
 
-this will create `./Nia`, which you should symlink to somewhere in your path as `niacop`.
+this will create a binary `niacop`, which you should symlink to somewhere in your path as `niacop`.
 then, you can use `niacop` to invoke the program.
 
 alternatively, you can also make a CoreRT build, though this is experimental:
