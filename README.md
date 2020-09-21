@@ -1,4 +1,6 @@
 
+![icon](media/icon.png)
+
 # niacop
 a cross platform self-tracker tool
 
