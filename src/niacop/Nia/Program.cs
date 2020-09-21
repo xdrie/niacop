@@ -21,7 +21,7 @@ namespace Nia {
                 Global.config = config;
             }
             else {
-                Global.log.err($"config file does not exist at {configFilePath}");
+                Global.log.err($"config file does not exist at {configFilePath}. for instructions, see: https://github.com/xdrie/niacop#configpaths");
                 return 2;
             }
 
