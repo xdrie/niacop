@@ -21,6 +21,7 @@ namespace Nia.CLI {
 
 
         public override int run(Options options) {
+            // ensure 'book' exists in profile
             Directory.CreateDirectory(Path.GetDirectoryName(bookDatabaseFile));
             database = new SQLiteConnection(bookDatabaseFile);
             database.CreateTable<BookEntry>();

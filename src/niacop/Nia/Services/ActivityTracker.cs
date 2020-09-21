@@ -28,6 +28,7 @@ namespace Nia.Services {
         }
 
         public void initialize() {
+            // ensure 'tracker' exists in profile
             Directory.CreateDirectory(Path.GetDirectoryName(trackerDatabaseFile));
             database = new SQLiteConnection(trackerDatabaseFile);
             database.CreateTable<Session>();
