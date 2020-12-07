@@ -2,7 +2,7 @@
 ![icon](media/icon.png)
 
 # niacop
-a cross platform self-tracker tool
+a cross platform automatic time-tracking tool
 
 **niacop** runs in the background as a daemon and gradually gathers data on
 your computer usage. all data collection is done locally and data never leaves
