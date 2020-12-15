@@ -62,10 +62,15 @@ namespace Nia.Native.Platforms {
             keyHookProc.OutputDataReceived += (sender, args) => {
                 var line = args.Data;
                 if (line != null) {
-                    var lineMatch = keyEventRegex.Match(line);
-                    var sysKeycode = int.Parse(lineMatch.Groups[2].Value);
-                    var keysym = keymap[sysKeycode];
-                    callback(new KeyboardEvent(keysym, lineMatch.Groups[1].Value == "press"));
+                    try {
+                        var lineMatch = keyEventRegex.Match(line);
+                        var sysKeycode = int.Parse(lineMatch.Groups[2].Value);
+                        var keysym = keymap[sysKeycode];
+                        callback(new KeyboardEvent(keysym, lineMatch.Groups[1].Value == "press"));
+                    }
+                    catch (Exception ex) {
+                        Global.log.err($"xinput keyhook event could not be parsed: {ex}");
+                    }
                 }
             };
         }
