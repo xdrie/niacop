@@ -59,7 +59,19 @@ sample config:
 name="test1"
  
 [tracker]
-# defaults
+keycounter = true # count key presses
+    # tags used to categorize sessions
+    [[tracker.tags]]
+    name = "GAME"
+    match = [
+        "lutris",
+        "steam",
+    ]
+    [[tracker.tags]]
+    name = "WWEB"
+    match = [
+        "firefox",
+    ]
 
 [log]
 verbosity = "trace"
@@ -73,6 +85,12 @@ for reference, see the [config model](src/niacop/Nia/Config.cs).
 + activity tracking mode will monitor active windows and applications and timestamps
 + run with `niacop activity`
 + ideally, fork it to the background
+
+### summary
+
++ automatically tag all sessions within a time range (using config `tracker.tags`)
++ display a ratio graph, breaking down activity by category
++ run with `niacop summary`
 
 ### time machine
 
