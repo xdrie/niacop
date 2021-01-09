@@ -46,7 +46,8 @@ namespace Nia {
                     typeof(ActivityDaemonRunner.Options),
                     typeof(BookRunner.Options),
                     typeof(TimeMachineRunner.Options),
-                    typeof(LastRunner.Options)
+                    typeof(LastRunner.Options),
+                    typeof(SummaryRunner.Options)
                 });
             var parsedArgs = (parserResult as Parsed<object>)?.Value;
             switch (parsedArgs) {
@@ -56,6 +57,10 @@ namespace Nia {
                 }
                 case TimeMachineRunner.Options options: {
                     using var runner = new TimeMachineRunner();
+                    return runner.run(options);
+                }
+                case SummaryRunner.Options options: {
+                    using var runner = new SummaryRunner();
                     return runner.run(options);
                 }
                 case BookRunner.Options options: {
