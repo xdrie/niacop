@@ -19,9 +19,9 @@ namespace Nia {
                 var config = new Config();
                 config.load(configFileContent);
                 Global.config = config;
-            }
-            else {
-                Global.log.err($"config file does not exist at {configFilePath}. for instructions, see: https://github.com/xdrie/niacop#configpaths");
+            } else {
+                Global.log.err(
+                    $"config file does not exist at {configFilePath}. for instructions, see: https://github.com/xdrie/niacop#configpaths");
                 return 2;
             }
 
@@ -55,20 +55,20 @@ namespace Nia {
                     using var runner = new ActivityDaemonRunner();
                     return runner.run(options);
                 }
-                case TimeMachineRunner.Options options: {
-                    using var runner = new TimeMachineRunner();
-                    return runner.run(options);
-                }
-                case SummaryRunner.Options options: {
-                    using var runner = new SummaryRunner();
-                    return runner.run(options);
-                }
                 case BookRunner.Options options: {
                     using var runner = new BookRunner();
                     return runner.run(options);
                 }
+                case TimeMachineRunner.Options options: {
+                    using var runner = new TimeMachineRunner();
+                    return runner.run(options);
+                }
                 case LastRunner.Options options: {
                     using var runner = new LastRunner();
+                    return runner.run(options);
+                }
+                case SummaryRunner.Options options: {
+                    using var runner = new SummaryRunner();
                     return runner.run(options);
                 }
                 default:
