@@ -34,7 +34,7 @@ namespace Nia {
 
             public class TagRule {
                 public string name;
-                public string[] match;
+                public List<string> match = new();
             }
         }
 
