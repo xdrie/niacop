@@ -44,9 +44,11 @@ namespace Nia.CLI {
             printer.line();
             printer.header("TOTAL TIME PER AREA");
             printer.line();
+            var graphData = new List<(string, long)>();
             foreach (var (tag, time) in tagTime) {
-                printer.line($"{tag} [{FormatHelper.formatTimeHM(time)}]");
+                graphData.Add(($"{tag} [{FormatHelper.formatTimeHM(time)}]", (long) time.TotalMilliseconds));
             }
+            printer.ratioGraph(graphData);
 
             return 0;
         }

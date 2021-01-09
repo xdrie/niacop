@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Nia.Util {
     public class ReportPrinter {
@@ -41,6 +43,20 @@ namespace Nia.Util {
 
         public void line(string str) {
             println(str);
+        }
+
+        public void ratioGraph(List<(string, long)> data) {
+            // 1. find the biggest value
+            var maxVal = data.OrderByDescending(x => x.Item2).First().Item2;
+            var startX = data.OrderByDescending(x => x.Item1.Length).First().Item1.Length + 1;
+            // 2. print
+            foreach (var (lb, val) in data) {
+                var ratio = (float) val / maxVal;
+                var barLen = (int) ((width - startX) * ratio);
+                var bar = new string('⋯', barLen);
+                var lineStr = $"{lb} {bar}";
+                line(lineStr);
+            }
         }
     }
 }
