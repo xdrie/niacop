@@ -49,6 +49,7 @@ namespace Nia.CLI {
                 graphData.Add(($"{tag} [{FormatHelper.formatTimeHM(time)}]", (long) time.TotalMilliseconds));
             }
             printer.ratioGraph(graphData);
+            printer.line();
 
             return 0;
         }
