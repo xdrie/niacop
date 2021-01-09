@@ -4,7 +4,7 @@ using Nia.Extensibility;
 
 namespace Nia.Services {
     public static class Extensibility {
-        public static PluginLoader<INiaPlugin> loader = new PluginLoader<INiaPlugin>();
-        public static CookieJar jar = new CookieJar();
+        public static PluginLoader<INiaPlugin> loader = new();
+        public static CookieJar jar = new();
     }
 }

@@ -12,7 +12,7 @@ namespace Nia {
             public string name = "default";
         }
 
-        public Profile profile = new Profile();
+        public Profile profile = new();
 
         public class Tracker {
             /// <summary>
@@ -29,27 +29,34 @@ namespace Nia {
             /// whether to count keystrokes
             /// </summary>
             public bool keycounter = false;
+
+            public List<TagRule> tags = new();
+
+            public class TagRule {
+                public string name;
+                public string[] match;
+            }
         }
 
-        public Tracker tracker = new Tracker();
+        public Tracker tracker = new();
 
         public class Book {
             public int browseEntries = 10;
         }
 
-        public Book book = new Book();
+        public Book book = new();
 
         public class Log {
             public Logger.Verbosity verbosity = Logger.Verbosity.Information;
         }
 
-        public Log log = new Log();
+        public Log log = new();
 
         public class Ext {
-            public List<string> paths = new List<string>();
+            public List<string> paths = new();
         }
 
-        public Ext ext = new Ext();
+        public Ext ext = new();
 
         protected override void load(TomlTable tb) {
             var profileTb = tb.getTable(nameof(profile));
@@ -60,7 +67,7 @@ namespace Nia {
 
             var bookTb = tb.getTable(nameof(book));
             bookTb.autoBind(book);
-            
+
             var logTb = tb.getTable(nameof(log));
             logTb.autoBind(log);
 

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Nia.Native.Platforms {
     public class XWindowManager : IWindowManager {
-        private Dictionary<int, string> keymap = new Dictionary<int, string>();
+        private Dictionary<int, string> keymap = new();
 
         private Process? keyHookProc;
 
