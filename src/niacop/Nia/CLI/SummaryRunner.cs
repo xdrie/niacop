@@ -22,7 +22,7 @@ namespace Nia.CLI {
             var tagger = new ActivityTagger(tracker);
 
             // tag sessions
-            tagger.tagAllSessions(startDateOffset);
+            var stats = tagger.tagAllSessions(startDateOffset);
 
             var tagged = tagger.timePerTag;
             var tagTime = new List<(string, TimeSpan)>();
@@ -38,6 +38,15 @@ namespace Nia.CLI {
 
             // print fancy summary
             var printer = new ReportPrinter();
+            printer.header("NIACOP", "SUMMARY MODE");
+            printer.header(
+                $"{(int) options.period} DAYS // {stats.SessionCount} SESSIONS // TOTAL {FormatHelper.formatTimeHM(stats.TotalTime)}");
+            printer.line();
+            printer.header("TOTAL TIME PER AREA");
+            printer.line();
+            foreach (var (tag, time) in tagTime) {
+                printer.line($"{tag} [{FormatHelper.formatTimeHM(time)}]");
+            }
 
             return 0;
         }

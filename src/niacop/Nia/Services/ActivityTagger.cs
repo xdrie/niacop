@@ -17,7 +17,12 @@ namespace Nia.Services {
             sessionTable = tracker.database!.Table<Session>();
         }
 
-        public void tagAllSessions(DateTimeOffset startDate) {
+        public record TagStats {
+            public int SessionCount { get; init; }
+            public TimeSpan TotalTime { get; init; }
+        }
+
+        public TagStats tagAllSessions(DateTimeOffset startDate) {
             var startTimestamp = startDate.ToUnixTimeMilliseconds();
             // filter sessions by date
             var sessions = sessionTable.Where(x =>
@@ -29,8 +34,13 @@ namespace Nia.Services {
             // get tags
             var tags = Global.config.tracker.tags;
 
+            var totalTime = 0L;
+            var sessCount = 0;
+
             foreach (var sess in sessions) {
+                sessCount++;
                 var sessDur = sess.getDuration();
+                totalTime += sessDur;
                 // check tags in order for matches
                 bool foundMatch = false;
                 foreach (var tag in tags) {
@@ -51,6 +61,8 @@ namespace Nia.Services {
                 // no matches, add to unknown
                 addTime(UNKNOWN_TAG, sessDur);
             }
+
+            return new TagStats {SessionCount = sessCount, TotalTime = TimeSpan.FromMilliseconds(totalTime)};
         }
 
         private void addTime(string tag, long time) {
