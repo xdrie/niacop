@@ -45,6 +45,7 @@ namespace Nia.Services {
 
                     if (foundMatch) break;
                 }
+
                 if (foundMatch) continue;
 
                 // no matches, add to unknown
@@ -59,11 +60,16 @@ namespace Nia.Services {
 
         private bool matchesSession(string pattern, Session sess) {
             bool match = false;
+            Func<string, string, bool> matcher;
             if (Wildcard.isRaw(pattern)) {
-                match = sess.application?.Contains(pattern) ?? false;
+                matcher = (p, s) => s.Contains(p);
             } else {
-                match = Wildcard.match(pattern, sess.application ?? string.Empty);
+                matcher = Wildcard.match;
             }
+
+            // check all fields
+            match = match || matcher(pattern, sess.application ?? "");
+            match = match || matcher(pattern, sess.processName ?? "");
 
             return match;
         }
