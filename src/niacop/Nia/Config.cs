@@ -60,12 +60,12 @@ namespace Nia {
 
             var bookTb = tb.getTable(nameof(book));
             bookTb.autoBind(book);
+            
+            var logTb = tb.getTable(nameof(log));
+            logTb.autoBind(log);
 
             var extTb = tb.getTable(nameof(ext));
             extTb.autoBind(ext);
-
-            var logTb = tb.getTable(nameof(log));
-            logTb.autoBind(log);
 
             // apply config
             Global.log.verbosity = log.verbosity;
