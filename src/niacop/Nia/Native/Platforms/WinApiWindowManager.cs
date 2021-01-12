@@ -47,9 +47,20 @@ namespace Nia.Native.Platforms {
                 const int bufSize = 256;
                 var buf = new StringBuilder(bufSize);
 
-                if (GetWindowText(windowHandle, buf, bufSize) > 0) {
+                if (GetWindowText(windowHandle, buf, bufSize) > 0)
                     return buf.ToString();
-                }
+
+                return null;
+            }
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+            public static string? getWindowClassName(IntPtr windowHandle) {
+                const int bufSize = 256;
+                var buf = new StringBuilder(bufSize);
+                if (GetClassName(windowHandle, buf, bufSize) > 0)
+                    return buf.ToString();
 
                 return null;
             }
@@ -72,8 +83,9 @@ namespace Nia.Native.Platforms {
             var windowHandle = Api.GetForegroundWindow();
             var winTitle = Api.getWindowTitle(windowHandle);
             Api.GetWindowThreadProcessId(windowHandle, out var winPid);
+            var winClass = Api.getWindowClassName(windowHandle);
             // https://stackoverflow.com/a/115905/13240621
-            return new Window("", winTitle ?? "", (int) winPid);
+            return new Window(winClass ?? "", winTitle ?? "", (int) winPid);
         }
 
         public void hookUserEvents(Action<KeyboardEvent> callback) {
