@@ -53,6 +53,7 @@ namespace Nia.Services {
             var idleTime = platform.wm.getIdleTime();
             if (idleTime > Global.config!.tracker.idle) {
                 if (current != null) {
+                    // there is a current session, but we have exceeded the idle time limit
                     Global.log.trace($"session entered idle state ({idleTime})");
                     endSession();
                 }
@@ -61,7 +62,10 @@ namespace Nia.Services {
             }
 
             var window = platform.wm.getActiveWindow();
-            if (window == null) return;
+            if (window == null) {
+                Global.log.trace("active window could not be obtained");
+                return;
+            }
 
             if (current == null) {
                 gatherSession(window);
@@ -74,8 +78,7 @@ namespace Nia.Services {
                         // window was changed, this session is over
                         endSession();
                         gatherSession(window);
-                    }
-                    else {
+                    } else {
                         // call each watcher
                         var sc = new SessionContext(current, window);
                         foreach (var watcher in watchers) {
@@ -126,8 +129,7 @@ namespace Nia.Services {
                 };
                 if (current == null) {
                     current = newSession;
-                }
-                else {
+                } else {
                     lock (current) {
                         current = newSession;
                     }
