@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -83,10 +84,20 @@ namespace Nia.Native.Platforms {
             // GetForegroundWindow
             var windowHandle = Api.GetForegroundWindow();
             var winTitle = Api.getWindowTitle(windowHandle);
+            var pid = 0;
+            var appName = default(string);
             Api.GetWindowThreadProcessId(windowHandle, out var winPid);
+            if (winPid > 0) {
+                pid = (int) winPid;
+                appName = Process.GetProcessById((int) pid).MainModule?.ModuleName;
+            }
+            else {
+                pid = -1; // failed to get PID
+            }
+
             var winClass = Api.getWindowClassName(windowHandle);
             // https://stackoverflow.com/a/115905/13240621
-            return new Window(winClass ?? "", winTitle ?? "", (int) winPid);
+            return new Window(appName ?? "", winTitle ?? "", pid);
         }
 
         public void hookUserEvents(Action<KeyboardEvent> callback) {
