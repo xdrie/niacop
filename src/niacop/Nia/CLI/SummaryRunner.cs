@@ -23,16 +23,8 @@ namespace Nia.CLI {
             var summarizer = new SessionRangeSummarizer(tracker);
             var (tagResult, graphData) = summarizer.summarizeSessionRange(startDateOffset, DateTimeOffset.Now);
 
-            // print fancy summary
-            var printer = new ReportPrinter();
-            printer.header("NIACOP", "SUMMARY MODE");
-            printer.header(
+            summarizer.printSummaryReport(graphData,
                 $"{(int) options.period} DAYS // {tagResult.SessionCount} SESSIONS // TOTAL {FormatHelper.formatTimeHM(tagResult.TotalTime)}");
-            printer.line();
-            printer.header("TOTAL TIME PER AREA");
-            printer.line();
-            printer.ratioGraph(graphData);
-            printer.line();
 
             return 0;
         }

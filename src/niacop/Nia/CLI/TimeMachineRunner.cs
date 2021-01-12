@@ -139,6 +139,9 @@ namespace Nia.CLI {
             }
 
             Global.log.info(sb.ToString());
+            
+            var summarizer = new SessionRangeSummarizer(tracker);
+            var (tagResult, graphData) = summarizer.summarizeSessionRange(periodStartDate, periodEndDate);
 
             return 0;
         }

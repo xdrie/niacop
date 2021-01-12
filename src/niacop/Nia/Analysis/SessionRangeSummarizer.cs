@@ -36,5 +36,17 @@ namespace Nia.Services {
 
             return (tagResult, graphData);
         }
+
+        public void printSummaryReport(List<(string, long)> graphData, string title) {
+            // print fancy summary
+            var printer = new ReportPrinter();
+            printer.header("NIACOP", "SUMMARY MODE");
+            printer.header(title);
+            printer.line();
+            printer.header("TOTAL TIME PER AREA");
+            printer.line();
+            printer.ratioGraph(graphData);
+            printer.line();
+        }
     }
 }
