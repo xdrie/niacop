@@ -27,7 +27,8 @@ namespace Nia.Native.Platforms {
                 lastInput.cbSize = (uint) Marshal.SizeOf(lastInput);
                 GetLastInputInfo(ref lastInput);
 
-                return ((uint) Environment.TickCount - lastInput.dwTime);
+                var diff = (uint) Environment.TickCount - lastInput.dwTime;
+                return diff;
             }
 
             [DllImport("user32.dll")]
