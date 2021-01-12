@@ -136,6 +136,7 @@ namespace Nia.Native.Platforms {
 
             IntPtr hookCallback(
                 int nCode, IntPtr wParam, IntPtr lParam) {
+                Global.log.trace($"keyevent! cd: {nCode}");
                 if (nCode >= 0) {
                     int code = Marshal.ReadInt32(lParam);
                     var keyStr = code.ToString();
@@ -150,6 +151,7 @@ namespace Nia.Native.Platforms {
             }
 
             hookId = Api.setHook(hookCallback);
+            Global.log.trace($"win32 key event hook set");
         }
     }
 }
