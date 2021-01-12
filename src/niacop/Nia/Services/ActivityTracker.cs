@@ -38,6 +38,7 @@ namespace Nia.Services {
         }
 
         public void run(CancellationToken token) {
+            Global.log.trace($"key counter enabled: {Global.config!.tracker.keycounter}");
             if (Global.config!.tracker.keycounter) {
                 runKeyCounter();
             }
