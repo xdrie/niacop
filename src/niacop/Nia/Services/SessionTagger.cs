@@ -33,13 +33,14 @@ namespace Nia.Services {
                 Func<string, string, bool> matcher;
                 if (Wildcard.isRaw(pattern)) {
                     matcher = (p, s) => s.Contains(p);
-                } else {
+                }
+                else {
                     matcher = Wildcard.match;
                 }
 
                 // check all fields
-                match = match || matcher(pattern, sess.application ?? "");
-                match = match || matcher(pattern, sess.processName ?? "");
+                match = match || matcher(pattern, sess.application?.ToLower() ?? "");
+                match = match || matcher(pattern, sess.processName?.ToLower() ?? "");
 
                 return match;
             }
