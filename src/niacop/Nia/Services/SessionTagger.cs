@@ -5,13 +5,12 @@ using Nia.Util;
 using SQLite;
 
 namespace Nia.Services {
-    public class ActivityTagger {
+    public class SessionTagger {
         private TableQuery<Session> sessionTable;
-        // public Dictionary<string, TimeSpan> timePerTag { get; } = new();
 
         public const string UNKNOWN_TAG = "OTHR";
 
-        public ActivityTagger(ActivityTracker tracker) {
+        public SessionTagger(ActivityTracker tracker) {
             sessionTable = tracker.database!.Table<Session>();
         }
 

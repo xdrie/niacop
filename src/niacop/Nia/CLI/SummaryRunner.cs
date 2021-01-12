@@ -19,7 +19,7 @@ namespace Nia.CLI {
 
             var tracker = new ActivityTracker();
             tracker.initialize();
-            var tagger = new ActivityTagger(tracker);
+            var tagger = new SessionTagger(tracker);
 
             // tag sessions
             var tagResult = tagger.tagAllSessions(startDateOffset, DateTimeOffset.Now);
@@ -34,7 +34,7 @@ namespace Nia.CLI {
             }
 
             // now unknown tag
-            categoryTimeList.Add((ActivityTagger.UNKNOWN_TAG, tagResult.TimePerTag[ActivityTagger.UNKNOWN_TAG]));
+            categoryTimeList.Add((SessionTagger.UNKNOWN_TAG, tagResult.TimePerTag[SessionTagger.UNKNOWN_TAG]));
 
             // print fancy summary
             var printer = new ReportPrinter();
