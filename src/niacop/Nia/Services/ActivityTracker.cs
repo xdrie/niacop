@@ -63,7 +63,7 @@ namespace Nia.Services {
 
             var window = platform.wm.getActiveWindow();
             if (window == null) {
-                Global.log.trace("active window could not be obtained");
+                Global.log.err("active window could not be obtained");
                 return;
             }
 
