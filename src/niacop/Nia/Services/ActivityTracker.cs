@@ -101,7 +101,7 @@ namespace Nia.Services {
             }
         }
 
-        private void gatherSession(Window window) {
+        private void gatherSession(Window? window) {
             if (window == null) return;
             // detect process path
             try {

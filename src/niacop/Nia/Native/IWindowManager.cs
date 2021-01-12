@@ -22,7 +22,7 @@ namespace Nia.Native {
         /// get information about the active window
         /// </summary>
         /// <returns></returns>
-        Window getActiveWindow();
+        Window? getActiveWindow();
 
         void hookUserEvents(Action<KeyboardEvent> callback);
     }
