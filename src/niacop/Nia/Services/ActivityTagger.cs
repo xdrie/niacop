@@ -22,11 +22,11 @@ namespace Nia.Services {
             public TimeSpan TotalTime { get; init; }
         }
 
-        public TagStats tagAllSessions(DateTimeOffset startDate) {
-            var startTimestamp = startDate.ToUnixTimeMilliseconds();
-            // filter sessions by date
+        public TagStats tagAllSessions(DateTimeOffset startDate, DateTimeOffset endDate) {
+            // filter sessions into date range
             var sessions = sessionTable.Where(x =>
-                x.startTime >= startTimestamp).ToList();
+                    x.startTime >= startDate.ToUnixTimeMilliseconds() && x.endTime <= endDate.ToUnixTimeMilliseconds())
+                .ToList();
 
             // start building
             addTime(UNKNOWN_TAG, 0);

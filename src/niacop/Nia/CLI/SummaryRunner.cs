@@ -22,7 +22,7 @@ namespace Nia.CLI {
             var tagger = new ActivityTagger(tracker);
 
             // tag sessions
-            var stats = tagger.tagAllSessions(startDateOffset);
+            var stats = tagger.tagAllSessions(startDateOffset, DateTimeOffset.Now);
 
             var tagged = tagger.timePerTag;
             var tagTime = new List<(string, TimeSpan)>();
