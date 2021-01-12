@@ -5,8 +5,8 @@
         <Nullable>enable</Nullable>
 
         <AssemblyName>niacop</AssemblyName>
-        <Version>0.7.1</Version>
-        <Copyright>Copyright © RIEICU, 2018-2020.</Copyright>
+        <Version>0.7.2</Version>
+        <Copyright>Copyright © RIEICU, 2018-2021.</Copyright>
         <Company>RIEICU</Company>
     </PropertyGroup>
 
