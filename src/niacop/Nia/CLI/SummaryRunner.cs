@@ -19,22 +19,9 @@ namespace Nia.CLI {
 
             var tracker = new ActivityTracker();
             tracker.initialize();
-            var tagger = new SessionTagger(tracker);
 
-            // tag sessions
-            var tagResult = tagger.tagAllSessions(startDateOffset, DateTimeOffset.Now);
-
-            // condense the dictionary into a list of time-tagged categories
-            var categoryTimeList = new List<(string, TimeSpan)>();
-            // configured tags
-            foreach (var tag in Global.config.tracker.tags) {
-                if (tagResult.TimePerTag.ContainsKey(tag.name)) {
-                    categoryTimeList.Add((tag.name, tagResult.TimePerTag[tag.name]));
-                }
-            }
-
-            // now unknown tag
-            categoryTimeList.Add((SessionTagger.UNKNOWN_TAG, tagResult.TimePerTag[SessionTagger.UNKNOWN_TAG]));
+            var summarizer = new SessionRangeSummarizer(tracker);
+            var (tagResult, graphData) = summarizer.summarizeSessionRange(startDateOffset, DateTimeOffset.Now);
 
             // print fancy summary
             var printer = new ReportPrinter();
@@ -44,10 +31,6 @@ namespace Nia.CLI {
             printer.line();
             printer.header("TOTAL TIME PER AREA");
             printer.line();
-            var graphData = new List<(string, long)>();
-            foreach (var (tag, time) in categoryTimeList) {
-                graphData.Add(($"{tag} [{FormatHelper.formatTimeHM(time)}]", (long) time.TotalMilliseconds));
-            }
             printer.ratioGraph(graphData);
             printer.line();
 
