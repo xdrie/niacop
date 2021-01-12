@@ -1,35 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    
-    <AssemblyName>niacop</AssemblyName>
-    <Version>0.7.0</Version>
-    <Copyright>Copyright © RIEICU, 2018-2020.</Copyright>
-    <Company>RIEICU</Company>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Chronic.Core" Version="0.4.0" />
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="FuzzySharp" Version="2.0.2" />
-    <PackageReference Include="Iri.Glass" Version="0.3.1" />
-    <PackageReference Include="Iri.Plugin" Version="1.1.1" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
-  </ItemGroup>
-  
-  <!-- CoreRT Support -->
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>enable</Nullable>
 
-  <ItemGroup Condition="'$(UseCoreRT)' != ''">
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*" />
-  </ItemGroup>
+        <AssemblyName>niacop</AssemblyName>
+        <Version>0.7.0</Version>
+        <Copyright>Copyright © RIEICU, 2018-2020.</Copyright>
+        <Company>RIEICU</Company>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(UseCoreRT)' != ''">
-    <DefineConstants>$(DefineConstants);CORERT</DefineConstants>
-    <IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
-    <IlcOptimizationPreference>Size</IlcOptimizationPreference>
-    <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
-    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
-  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Chronic.Core" Version="0.4.0"/>
+        <PackageReference Include="CommandLineParser" Version="2.8.0"/>
+        <PackageReference Include="FuzzySharp" Version="2.0.2"/>
+        <PackageReference Include="Iri.Glass" Version="0.3.1"/>
+        <PackageReference Include="Iri.Plugin" Version="1.1.1"/>
+        <PackageReference Include="sqlite-net-pcl" Version="1.7.335"/>
+    </ItemGroup>
+
+    <!-- Publish Options -->
+    <PropertyGroup>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>Link</TrimMode>
+    </PropertyGroup>
 </Project>
