@@ -6,26 +6,50 @@ using SQLite;
 
 namespace Nia.Services {
     public class ActivityTagger {
-        private readonly ActivityTracker tracker;
         private TableQuery<Session> sessionTable;
-        public Dictionary<string, TimeSpan> timePerTag { get; } = new();
+        // public Dictionary<string, TimeSpan> timePerTag { get; } = new();
 
         public const string UNKNOWN_TAG = "OTHR";
 
         public ActivityTagger(ActivityTracker tracker) {
-            this.tracker = tracker;
             sessionTable = tracker.database!.Table<Session>();
         }
 
-        public record TagStats {
+        public record TaggedSessionResults {
             public int SessionCount { get; init; }
             public TimeSpan TotalTime { get; init; }
+            public Dictionary<string, TimeSpan> TimePerTag { get; init; }
         }
 
-        public TagStats tagAllSessions(DateTimeOffset startDate, DateTimeOffset endDate) {
+        public TaggedSessionResults tagAllSessions(DateTimeOffset startDate, DateTimeOffset endDate) {
+            var timePerTag = new Dictionary<string, TimeSpan>();
+
+            void addTime(string tag, long time) {
+                if (!timePerTag.ContainsKey(tag)) timePerTag[tag] = TimeSpan.Zero;
+                timePerTag[tag] += TimeSpan.FromMilliseconds(time);
+            }
+
+            bool matchesSession(string pattern, Session sess) {
+                bool match = false;
+                Func<string, string, bool> matcher;
+                if (Wildcard.isRaw(pattern)) {
+                    matcher = (p, s) => s.Contains(p);
+                } else {
+                    matcher = Wildcard.match;
+                }
+
+                // check all fields
+                match = match || matcher(pattern, sess.application ?? "");
+                match = match || matcher(pattern, sess.processName ?? "");
+
+                return match;
+            }
+
             // filter sessions into date range
+            var startDateTs = startDate.ToUnixTimeMilliseconds();
+            var endDateTs = endDate.ToUnixTimeMilliseconds();
             var sessions = sessionTable.Where(x =>
-                    x.startTime >= startDate.ToUnixTimeMilliseconds() && x.endTime <= endDate.ToUnixTimeMilliseconds())
+                    x.startTime >= startDateTs && x.endTime <= endDateTs)
                 .ToList();
 
             // start building
@@ -62,28 +86,8 @@ namespace Nia.Services {
                 addTime(UNKNOWN_TAG, sessDur);
             }
 
-            return new TagStats {SessionCount = sessCount, TotalTime = TimeSpan.FromMilliseconds(totalTime)};
-        }
-
-        private void addTime(string tag, long time) {
-            if (!timePerTag.ContainsKey(tag)) timePerTag[tag] = TimeSpan.Zero;
-            timePerTag[tag] += TimeSpan.FromMilliseconds(time);
-        }
-
-        private bool matchesSession(string pattern, Session sess) {
-            bool match = false;
-            Func<string, string, bool> matcher;
-            if (Wildcard.isRaw(pattern)) {
-                matcher = (p, s) => s.Contains(p);
-            } else {
-                matcher = Wildcard.match;
-            }
-
-            // check all fields
-            match = match || matcher(pattern, sess.application ?? "");
-            match = match || matcher(pattern, sess.processName ?? "");
-
-            return match;
+            return new TaggedSessionResults
+                {SessionCount = sessCount, TotalTime = TimeSpan.FromMilliseconds(totalTime), TimePerTag = timePerTag};
         }
     }
 }

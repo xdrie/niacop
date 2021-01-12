@@ -22,30 +22,30 @@ namespace Nia.CLI {
             var tagger = new ActivityTagger(tracker);
 
             // tag sessions
-            var stats = tagger.tagAllSessions(startDateOffset, DateTimeOffset.Now);
+            var tagResult = tagger.tagAllSessions(startDateOffset, DateTimeOffset.Now);
 
-            var tagged = tagger.timePerTag;
-            var tagTime = new List<(string, TimeSpan)>();
+            // condense the dictionary into a list of time-tagged categories
+            var categoryTimeList = new List<(string, TimeSpan)>();
             // configured tags
             foreach (var tag in Global.config.tracker.tags) {
-                if (tagged.ContainsKey(tag.name)) {
-                    tagTime.Add((tag.name, tagged[tag.name]));
+                if (tagResult.TimePerTag.ContainsKey(tag.name)) {
+                    categoryTimeList.Add((tag.name, tagResult.TimePerTag[tag.name]));
                 }
             }
 
             // now unknown tag
-            tagTime.Add((ActivityTagger.UNKNOWN_TAG, tagged[ActivityTagger.UNKNOWN_TAG]));
+            categoryTimeList.Add((ActivityTagger.UNKNOWN_TAG, tagResult.TimePerTag[ActivityTagger.UNKNOWN_TAG]));
 
             // print fancy summary
             var printer = new ReportPrinter();
             printer.header("NIACOP", "SUMMARY MODE");
             printer.header(
-                $"{(int) options.period} DAYS // {stats.SessionCount} SESSIONS // TOTAL {FormatHelper.formatTimeHM(stats.TotalTime)}");
+                $"{(int) options.period} DAYS // {tagResult.SessionCount} SESSIONS // TOTAL {FormatHelper.formatTimeHM(tagResult.TotalTime)}");
             printer.line();
             printer.header("TOTAL TIME PER AREA");
             printer.line();
             var graphData = new List<(string, long)>();
-            foreach (var (tag, time) in tagTime) {
+            foreach (var (tag, time) in categoryTimeList) {
                 graphData.Add(($"{tag} [{FormatHelper.formatTimeHM(time)}]", (long) time.TotalMilliseconds));
             }
             printer.ratioGraph(graphData);
