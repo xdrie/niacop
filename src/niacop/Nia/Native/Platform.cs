@@ -1,22 +1,24 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Nia.Native.Platforms;
 
 namespace Nia.Native {
     public class Platform {
-        public IWindowManager wm;
+        public IWindowManager? wm;
 
         public Platform() {
-            switch (Environment.OSVersion.Platform) {
-                case PlatformID.Unix:
-                    wm = new XWindowManager();
-                    break;
-                case PlatformID.Win32NT:
-                    wm = new WinApiWindowManager();
-                    break;
-                default:
-                    throw new PlatformNotSupportedException($"The platform {Environment.OSVersion.Platform} is not supported.");
+            if (OperatingSystem.IsLinux()) {
+                wm = new XWindowManager();
+            } else if (OperatingSystem.IsMacOS()) {
+                wm = new CocoaWIndowManager();
+            } else if (OperatingSystem.IsWindows()) {
+                wm = new WinApiWindowManager();
+            } else {
+                throw new PlatformNotSupportedException(
+                    $"The platform {Environment.OSVersion.Platform} ({RuntimeInformation.OSDescription}) is not supported.");
             }
-            wm.initialize();
+
+            wm!.initialize();
         }
 
         public void destroy() {
