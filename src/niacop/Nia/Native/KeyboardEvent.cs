@@ -1,5 +1,5 @@
 ﻿namespace Nia.Native {
-    public class KeyboardEvent {
+    public struct KeyboardEvent {
         public string key;
         public bool pressed;
 

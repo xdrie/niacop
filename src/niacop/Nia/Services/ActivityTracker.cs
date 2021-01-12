@@ -146,7 +146,7 @@ namespace Nia.Services {
         }
 
         private void runKeyCounter() {
-            platform.wm.hookUserEvents(onKeyEvent);
+            platform.wm!.hookUserEvents(onKeyEvent);
         }
 
         private void onKeyEvent(KeyboardEvent kev) {
