@@ -17,7 +17,7 @@ namespace Nia.Services {
         public record TaggedSessionResults {
             public int SessionCount { get; init; }
             public TimeSpan TotalTime { get; init; }
-            public Dictionary<string, TimeSpan> TimePerTag { get; init; }
+            public Dictionary<string, TimeSpan> TimePerTag { get; init; } = new();
         }
 
         public TaggedSessionResults tagAllSessions(DateTimeOffset startDate, DateTimeOffset endDate) {
@@ -56,7 +56,7 @@ namespace Nia.Services {
             addTime(UNKNOWN_TAG, 0);
 
             // get tags
-            var tags = Global.config.tracker.tags;
+            var tags = Global.config!.tracker.tags;
 
             var totalTime = 0L;
             var sessCount = 0;
@@ -71,7 +71,7 @@ namespace Nia.Services {
                     foreach (var pattern in tag.match) {
                         if (matchesSession(pattern, sess)) {
                             // this session matched
-                            addTime(tag.name, sessDur);
+                            addTime(tag.name!, sessDur);
                             foundMatch = true;
                             break;
                         }

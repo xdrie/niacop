@@ -134,29 +134,29 @@ namespace Nia.Native.Platforms {
             throw new NotSupportedException(
                 "KEYCOUNTER is currently not supported on the Win32 platform. please set keycounter = false under [tracker] in the configuration.");
 
-            IntPtr hookId = IntPtr.Zero;
-            const int WM_KEYDOWN = 0x0100;
-            const int WM_KEYUP = 0x0101;
-
-            IntPtr hookCallback(
-                int nCode, IntPtr wParam, IntPtr lParam) {
-                Global.log.trace($"keyevent! cd: {nCode}");
-                if (nCode >= 0) {
-                    int code = Marshal.ReadInt32(lParam);
-                    var keyStr = code.ToString();
-                    if (wParam == (IntPtr) WM_KEYDOWN) {
-                        callback(new KeyboardEvent(keyStr, true));
-                    }
-                    else if (wParam == (IntPtr) WM_KEYUP) {
-                        callback(new KeyboardEvent(keyStr, false));
-                    }
-                }
-
-                return Api.CallNextHookEx(hookId, nCode, wParam, lParam);
-            }
-
-            hookId = Api.setHook(hookCallback);
-            Global.log.trace($"win32 key event hook set");
+            // IntPtr hookId = IntPtr.Zero;
+            // const int WM_KEYDOWN = 0x0100;
+            // const int WM_KEYUP = 0x0101;
+            //
+            // IntPtr hookCallback(
+            //     int nCode, IntPtr wParam, IntPtr lParam) {
+            //     Global.log.trace($"keyevent! cd: {nCode}");
+            //     if (nCode >= 0) {
+            //         int code = Marshal.ReadInt32(lParam);
+            //         var keyStr = code.ToString();
+            //         if (wParam == (IntPtr) WM_KEYDOWN) {
+            //             callback(new KeyboardEvent(keyStr, true));
+            //         }
+            //         else if (wParam == (IntPtr) WM_KEYUP) {
+            //             callback(new KeyboardEvent(keyStr, false));
+            //         }
+            //     }
+            //
+            //     return Api.CallNextHookEx(hookId, nCode, wParam, lParam);
+            // }
+            //
+            // hookId = Api.setHook(hookCallback);
+            // Global.log.trace($"win32 key event hook set");
         }
     }
 }

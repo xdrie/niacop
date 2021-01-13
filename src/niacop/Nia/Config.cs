@@ -33,7 +33,7 @@ namespace Nia {
             public List<TagRule> tags = new();
 
             public class TagRule {
-                public string name;
+                public string name = string.Empty;
                 public List<string> match = new();
             }
         }

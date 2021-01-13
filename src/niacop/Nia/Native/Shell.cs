@@ -59,7 +59,11 @@ namespace Nia.Native {
             command = command.Replace("\"", "\\\"");
             switch (type) {
                 case ShellType.Windows: {
-                    shellProcess.StartInfo.FileName = which("cmd.exe");
+                    var shellPath = which("cmd.exe");
+                    if (shellPath == null) {
+                        throw new FileNotFoundException("cmd.exe could not be found");
+                    }
+                    shellProcess.StartInfo.FileName = shellPath;
                     shellProcess.StartInfo.Arguments =
                         $"/C {command}";
                     shellProcess.StartInfo.CreateNoWindow = true;

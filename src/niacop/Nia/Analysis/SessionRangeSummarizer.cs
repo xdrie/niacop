@@ -21,7 +21,7 @@ namespace Nia.Analysis {
             var categoryTimeList = new List<(string, TimeSpan)>();
             // configured tags
             foreach (var tag in Global.config!.tracker.tags) {
-                if (tagResult.TimePerTag.ContainsKey(tag.name)) {
+                if (tagResult.TimePerTag.ContainsKey(tag.name!)) {
                     categoryTimeList.Add((tag.name, tagResult.TimePerTag[tag.name]));
                 }
             }
