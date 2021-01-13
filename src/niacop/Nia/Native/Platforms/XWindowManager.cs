@@ -37,7 +37,11 @@ namespace Nia.Native.Platforms {
         public int getIdleTime() {
             // xprintidle
             var xIdleTime = Shell.executeEval("xprintidle");
-            return int.Parse(xIdleTime.stdout);
+            if (!int.TryParse(xIdleTime.stdout, out var idleTime)) {
+                Global.log.err($"failed to parse output of `xprintidle`: {xIdleTime.stdout}");
+            }
+
+            return idleTime;
         }
 
         public Window getActiveWindow() {

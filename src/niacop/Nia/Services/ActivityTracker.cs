@@ -51,7 +51,7 @@ namespace Nia.Services {
         }
 
         private void pollSession() {
-            var idleTime = platform.wm.getIdleTime();
+            var idleTime = platform.wm!.getIdleTime();
             if (idleTime > Global.config!.tracker.idle) {
                 if (current != null) {
                     // there is a current session, but we have exceeded the idle time limit
