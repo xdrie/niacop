@@ -29,7 +29,7 @@
 
     <!-- Publish Options -->
     <PropertyGroup>
-        <PublishTrimmed>true</PublishTrimmed>
-        <TrimMode>Link</TrimMode>
+        <!-- <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>Link</TrimMode> -->
     </PropertyGroup>
 </Project>
