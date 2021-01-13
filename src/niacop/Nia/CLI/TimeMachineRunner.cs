@@ -5,6 +5,7 @@ using System.Text;
 using CommandLine;
 using Nia.Models;
 using Nia.Services;
+using Nia.Util;
 using HumanDateParser = Chronic.Core.Parser;
 
 namespace Nia.CLI {
@@ -142,6 +143,10 @@ namespace Nia.CLI {
             
             var summarizer = new SessionRangeSummarizer(tracker);
             var (tagResult, graphData) = summarizer.summarizeSessionRange(periodStartDate, periodEndDate);
+            
+            summarizer.printSummaryReport(graphData,
+                $"{(int) options.period} HOURS // {tagResult.SessionCount} SESSIONS // TOTAL {FormatHelper.formatTimeHM(tagResult.TotalTime)}",
+                "TIMEMACHINE MODE");
 
             return 0;
         }

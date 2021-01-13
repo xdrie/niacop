@@ -24,7 +24,8 @@ namespace Nia.CLI {
             var (tagResult, graphData) = summarizer.summarizeSessionRange(startDateOffset, DateTimeOffset.Now);
 
             summarizer.printSummaryReport(graphData,
-                $"{(int) options.period} DAYS // {tagResult.SessionCount} SESSIONS // TOTAL {FormatHelper.formatTimeHM(tagResult.TotalTime)}");
+                $"{(int) options.period} DAYS // {tagResult.SessionCount} SESSIONS // TOTAL {FormatHelper.formatTimeHM(tagResult.TotalTime)}",
+                "SUMMARY MODE");
 
             return 0;
         }
