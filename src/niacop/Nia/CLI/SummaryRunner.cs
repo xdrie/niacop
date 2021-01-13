@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommandLine;
+using Nia.Analysis;
 using Nia.Services;
 using Nia.Util;
 using HumanDateParser = Chronic.Core.Parser;

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Nia.Services;
 using Nia.Util;
 
-namespace Nia.Services {
+namespace Nia.Analysis {
     public class SessionRangeSummarizer {
         private readonly ActivityTracker tracker;
         private SessionTagger tagger;

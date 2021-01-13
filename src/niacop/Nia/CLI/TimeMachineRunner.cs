@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CommandLine;
+using Nia.Analysis;
 using Nia.Models;
 using Nia.Services;
 using Nia.Util;
