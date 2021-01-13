@@ -29,6 +29,7 @@
 
     <!-- Publish Options -->
     <PropertyGroup>
+        <PublishSingleFile>true</PublishSingleFile>
         <!-- <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>Link</TrimMode> -->
     </PropertyGroup>
