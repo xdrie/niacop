@@ -18,7 +18,7 @@ namespace Nia.Native {
                     $"The platform {Environment.OSVersion.Platform} ({RuntimeInformation.OSDescription}) is not supported.");
             }
 
-            Global.log.info($"using window manager: {wm.GetType().Name}");
+            // Global.log.info($"using window manager: {wm.GetType().Name}");
 
             wm!.initialize();
         }
